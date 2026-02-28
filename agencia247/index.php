@@ -1,7 +1,23 @@
 <?php
-// Main index file for Agencia 24·7 WordPress theme
+/**
+ * Fallback index template.
+ */
+
 get_header();
-if (is_front_page()) {
-	get_template_part('content/content-page');
-}
+?>
+<main class="content-fallback" id="primary">
+	<?php if (have_posts()) : ?>
+		<?php while (have_posts()) : the_post(); ?>
+			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+				<h1 class="entry-title"><?php the_title(); ?></h1>
+				<div class="entry-content">
+					<?php the_content(); ?>
+				</div>
+			</article>
+		<?php endwhile; ?>
+	<?php else : ?>
+		<p><?php esc_html_e('No content found.', 'agencia247'); ?></p>
+	<?php endif; ?>
+</main>
+<?php
 get_footer();

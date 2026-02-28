@@ -1,35 +1,63 @@
-// Main JS for Agencia 24·7 theme. Adds smooth scroll, nav highlight, and simple animations.
+// Main JS for Agencia247 theme.
 document.addEventListener('DOMContentLoaded', function() {
-	// Smooth scroll for anchor links
-	document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-		anchor.addEventListener('click', function(e) {
-			var target = document.querySelector(this.getAttribute('href'));
-			if(target) {
-				e.preventDefault();
-				target.scrollIntoView({ behavior: 'smooth' });
-			}
-		});
-	});
-	// Nav highlight on scroll
-	const sections = ['#hero','#servicios','#proyectos','#contacto'];
-	const navLinks = document.querySelectorAll('nav ul a');
-	window.addEventListener('scroll', function() {
-		let current = '';
-		sections.forEach(id => {
-			const section = document.querySelector(id);
-			if(section && window.scrollY >= section.offsetTop - 80) {
+	var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav ul a'));
+	var sections = ['#hero', '#servicios', '#proyectos', '#contacto'];
+
+	function linkHash(link) {
+		try {
+			return new URL(link.getAttribute('href'), window.location.origin).hash;
+		} catch (error) {
+			return '';
+		}
+	}
+
+	function isSamePage(link) {
+		try {
+			var linkUrl = new URL(link.getAttribute('href'), window.location.origin);
+			return linkUrl.pathname.replace(/\/$/, '') === window.location.pathname.replace(/\/$/, '');
+		} catch (error) {
+			return false;
+		}
+	}
+
+	function setActiveLink() {
+		var current = '';
+		sections.forEach(function(id) {
+			var section = document.querySelector(id);
+			if (section && window.scrollY >= section.offsetTop - 90) {
 				current = id;
 			}
 		});
-		navLinks.forEach(link => {
-			link.classList.remove('active');
-			if(link.getAttribute('href') === current) {
+
+		navLinks.forEach(function(link) {
+			if (linkHash(link) === current) {
 				link.classList.add('active');
+			} else {
+				link.classList.remove('active');
+			}
+		});
+	}
+
+	navLinks.forEach(function(link) {
+		link.addEventListener('click', function(event) {
+			var hash = linkHash(link);
+			if (!hash || !isSamePage(link)) {
+				return;
+			}
+
+			var target = document.querySelector(hash);
+			if (!target) {
+				return;
+			}
+
+			event.preventDefault();
+			target.scrollIntoView({ behavior: 'smooth' });
+			if (history.pushState) {
+				history.pushState(null, '', hash);
 			}
 		});
 	});
-	// Simple fade-in animation
-	document.querySelectorAll('.fadeUp').forEach(function(el) {
-		el.classList.add('animated');
-	});
+
+	window.addEventListener('scroll', setActiveLink);
+	setActiveLink();
 });
