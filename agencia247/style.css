@@ -8,3 +8,26 @@ Version: 1.0
 License: GNU General Public License v2 or later
 Text Domain: agencia 247 theme
 */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+:root {
+	--bg: #f5f7ff;
+	--bg2: #eef0fb;
+	--white: #ffffff;
+	--dark: #0d1024;
+	--mid: #3a3f5c;
+	--muted: #7b80a0;
+	--blue: #2351f5;
+	--blue-soft: rgba(35,81,245,0.08);
+	--blue-mid: rgba(35,81,245,0.18);
+	--blue-light: #e8edff;
+	--accent: #00c9a7;
+	--border: rgba(35,81,245,0.1);
+	--shadow: 0 8px 40px rgba(35,81,245,0.1);
+}
+body {
+	font-family: 'DM Sans', sans-serif;
+	background: var(--bg);
+	color: var(--dark);
+	overflow-x: hidden;
+}
+/* ...agrega aquí el resto de los estilos de inicio.php para nav, hero, sections, etc... */
