@@ -1,6 +1,6 @@
 // Main JS for Agencia247 theme.
 document.addEventListener('DOMContentLoaded', function() {
-	var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav ul a'));
+	var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav .primary-menu a'));
 	var sections = ['#hero', '#servicios', '#proyectos', '#contacto'];
 
 	function linkHash(link) {
@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 
 		navLinks.forEach(function(link) {
-			if (linkHash(link) === current) {
+			var hash = linkHash(link);
+			if (hash && hash === current) {
 				link.classList.add('active');
 			} else {
 				link.classList.remove('active');
