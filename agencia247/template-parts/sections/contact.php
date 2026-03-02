@@ -9,6 +9,21 @@ $contact_sub   = trim((string) agencia247_get_option('contact_sub'));
 $contact_text  = trim((string) agencia247_get_option('contact_text'));
 $contact_wa    = agencia247_get_whatsapp_url(agencia247_build_whatsapp_message('contacto', $contact_name));
 $map_logo_url  = agencia247_get_site_logo_url();
+$map_enabled_raw = agencia247_get_option('contact_map_enabled');
+$map_enabled   = ($map_enabled_raw === '' || $map_enabled_raw === null) ? true : (bool) $map_enabled_raw;
+$map_lat       = function_exists('agencia247_sanitize_latitude') ? agencia247_sanitize_latitude(agencia247_get_option('contact_map_lat')) : '-15.840691174561973';
+$map_lon       = function_exists('agencia247_sanitize_longitude') ? agencia247_sanitize_longitude(agencia247_get_option('contact_map_lon')) : '-70.02602661165675';
+$map_zoom      = function_exists('agencia247_sanitize_map_zoom') ? agencia247_sanitize_map_zoom(agencia247_get_option('contact_map_zoom')) : '13.4';
+$map_title     = trim((string) agencia247_get_option('contact_map_title'));
+$map_note      = trim((string) agencia247_get_option('contact_map_note'));
+$map_radar     = (bool) agencia247_get_option('contact_map_radar');
+
+if ($map_title === '') {
+	$map_title = __('Ubicacion de referencia', 'agencia247');
+}
+if ($map_note === '') {
+	$map_note = __('Explora el mapa y acercate para ver mejor la zona.', 'agencia247');
+}
 
 $social_items = array(
 	array(
@@ -62,7 +77,7 @@ $social_items = array(
 					<?php
 					$label = trim((string) $social['label']);
 					$url   = trim((string) $social['url']);
-					$key = isset($social['key']) ? (string) $social['key'] : '';
+					$key   = isset($social['key']) ? (string) $social['key'] : '';
 					if ($key === 'whatsapp' && $url === '' && $contact_wa !== '') {
 						$url = $contact_wa;
 					}
@@ -78,25 +93,31 @@ $social_items = array(
 			</div>
 		</div>
 
-		<aside class="contact-map-wrap">
-			<div class="contact-map-card">
-				<p class="contact-map-label"><?php esc_html_e('Ubicacion de referencia', 'agencia247'); ?></p>
-				<div
-					id="agencia247-contact-map"
-					class="contact-map"
-					data-lat="-15.840691174561973"
-					data-lon="-70.02602661165675"
-					data-logo-url="<?php echo esc_url($map_logo_url); ?>"
-				>
-					<div class="contact-map-radar" aria-hidden="true">
-						<span class="radar-ring radar-ring-1"></span>
-						<span class="radar-ring radar-ring-2"></span>
-						<span class="radar-ring radar-ring-3"></span>
-						<span class="radar-sweep"></span>
+		<?php if ($map_enabled) : ?>
+			<aside class="contact-map-wrap">
+				<div class="contact-map-card">
+					<p class="contact-map-label"><?php echo esc_html($map_title); ?></p>
+					<div
+						id="agencia247-contact-map"
+						class="contact-map"
+						data-lat="<?php echo esc_attr($map_lat); ?>"
+						data-lon="<?php echo esc_attr($map_lon); ?>"
+						data-zoom="<?php echo esc_attr($map_zoom); ?>"
+						data-radar="<?php echo $map_radar ? '1' : '0'; ?>"
+						data-logo-url="<?php echo esc_url($map_logo_url); ?>"
+					>
+						<?php if ($map_radar) : ?>
+							<div class="contact-map-radar" aria-hidden="true">
+								<span class="radar-ring radar-ring-1"></span>
+								<span class="radar-ring radar-ring-2"></span>
+								<span class="radar-ring radar-ring-3"></span>
+								<span class="radar-sweep"></span>
+							</div>
+						<?php endif; ?>
 					</div>
+					<p class="contact-map-note"><?php echo esc_html($map_note); ?></p>
 				</div>
-				<p class="contact-map-note"><?php esc_html_e('Explora el mapa y acercate para ver mejor la zona.', 'agencia247'); ?></p>
-			</div>
-		</div>
+			</aside>
+		<?php endif; ?>
 	</div>
 </section>

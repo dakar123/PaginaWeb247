@@ -1,9 +1,16 @@
 // Main JS for Agencia247 theme.
 document.addEventListener('DOMContentLoaded', function() {
+	var themeConfig = window.agencia247Theme || {};
+	var uiConfig = themeConfig.ui || {};
 	var nav = document.querySelector('.site-nav');
 	var navLinks = Array.prototype.slice.call(document.querySelectorAll('.site-nav .primary-menu a'));
 	var sections = ['#hero', '#servicios', '#proyectos', '#contacto'];
 	var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	var navDropdownDelay = parseInt(uiConfig.navDropdownDelay, 10);
+
+	if (!Number.isFinite(navDropdownDelay) || navDropdownDelay < 80) {
+		navDropdownDelay = 260;
+	}
 
 	document.body.classList.add('js-ready');
 
@@ -74,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 				closeTimeout = window.setTimeout(function() {
 					item.classList.remove('submenu-open');
-				}, 220);
+				}, navDropdownDelay);
 			}
 
 			item.addEventListener('mouseenter', openMenu);
@@ -107,6 +114,54 @@ document.addEventListener('DOMContentLoaded', function() {
 					history.pushState(null, '', hash);
 				}
 			});
+		});
+	}
+
+	function initBrandLogo() {
+		var logo = document.querySelector('.js-brand-logo');
+		if (!logo) {
+			return;
+		}
+
+		var brandIntro = uiConfig.brandIntro || (nav ? nav.getAttribute('data-brand-intro') : '') || 'drop';
+		var textEl = logo.querySelector('.logo-text');
+		var iconEl = logo.querySelector('img') || logo.querySelector('.logo-fallback');
+
+		logo.classList.add('logo-ready');
+		logo.classList.add('brand-intro-' + brandIntro);
+
+		if (!reducedMotion && brandIntro !== 'none') {
+			window.requestAnimationFrame(function() {
+				logo.classList.add('brand-animate-in');
+			});
+		}
+
+		if (reducedMotion) {
+			return;
+		}
+
+		logo.addEventListener('mousemove', function(event) {
+			var rect = logo.getBoundingClientRect();
+			var x = (event.clientX - rect.left) / rect.width;
+			var y = (event.clientY - rect.top) / rect.height;
+			var tx = (x - 0.5) * 8;
+			var ty = (y - 0.5) * 6;
+
+			if (iconEl) {
+				iconEl.style.transform = 'translate(' + (tx * 0.55).toFixed(2) + 'px,' + (ty * 0.55).toFixed(2) + 'px) scale(1.03)';
+			}
+			if (textEl) {
+				textEl.style.transform = 'translate(' + (tx * -0.35).toFixed(2) + 'px,' + (ty * -0.35).toFixed(2) + 'px)';
+			}
+		});
+
+		logo.addEventListener('mouseleave', function() {
+			if (iconEl) {
+				iconEl.style.transform = '';
+			}
+			if (textEl) {
+				textEl.style.transform = '';
+			}
 		});
 	}
 
@@ -184,17 +239,47 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 
-	function initContactMap() {
+	function loadOpenLayersAssets(done) {
+		if (typeof window.ol !== 'undefined') {
+			done();
+			return;
+		}
+
+		var existingScript = document.querySelector('script[data-agencia247-ol="1"], script[src*="cdn.jsdelivr.net/npm/ol@"], script[src*="/ol.js"]');
+		if (existingScript) {
+			existingScript.addEventListener('load', done, { once: true });
+			return;
+		}
+
+		if (!document.querySelector('link[data-agencia247-ol="1"], link[href*="cdn.jsdelivr.net/npm/ol@"]')) {
+			var link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css';
+			link.setAttribute('data-agencia247-ol', '1');
+			document.head.appendChild(link);
+		}
+
+		var script = document.createElement('script');
+		script.src = 'https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js';
+		script.async = true;
+		script.setAttribute('data-agencia247-ol', '1');
+		script.addEventListener('load', done, { once: true });
+		document.body.appendChild(script);
+	}
+
+	function renderContactMap() {
 		var mapElement = document.getElementById('agencia247-contact-map');
-		if (!mapElement || typeof window.ol === 'undefined') {
+		if (!mapElement || mapElement.getAttribute('data-map-ready') === '1' || typeof window.ol === 'undefined') {
 			return;
 		}
 
 		var datasetLat = parseFloat(mapElement.getAttribute('data-lat') || '');
 		var datasetLon = parseFloat(mapElement.getAttribute('data-lon') || '');
-		var localizedMap = (window.agencia247Theme && window.agencia247Theme.map) ? window.agencia247Theme.map : {};
+		var datasetZoom = parseFloat(mapElement.getAttribute('data-zoom') || '');
+		var localizedMap = themeConfig.map || {};
 		var lat = Number.isFinite(datasetLat) ? datasetLat : parseFloat(localizedMap.lat || '');
 		var lon = Number.isFinite(datasetLon) ? datasetLon : parseFloat(localizedMap.lon || '');
+		var zoom = Number.isFinite(datasetZoom) ? datasetZoom : parseFloat(localizedMap.zoom || '13.4');
 		var logoUrl = mapElement.getAttribute('data-logo-url') || localizedMap.logoUrl || '';
 
 		if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
@@ -245,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			],
 			view: new ol.View({
 				center: center,
-				zoom: 13.4
+				zoom: Number.isFinite(zoom) ? zoom : 13.4
 			}),
 			controls: ol.control.defaults({
 				zoom: false,
@@ -255,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 
 		if (!reducedMotion) {
-			map.getView().animate({ center: center, zoom: 15, duration: 900 });
+			map.getView().animate({ center: center, zoom: Math.max((Number.isFinite(zoom) ? zoom : 13.4), 14.8), duration: 900 });
 		}
 
 		if (typeof ResizeObserver !== 'undefined') {
@@ -264,6 +349,19 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 			resizeObserver.observe(mapElement);
 		}
+
+		mapElement.setAttribute('data-map-ready', '1');
+	}
+
+	function initContactMap() {
+		var mapElement = document.getElementById('agencia247-contact-map');
+		if (!mapElement) {
+			return;
+		}
+
+		loadOpenLayersAssets(function() {
+			renderContactMap();
+		});
 	}
 
 	function handleScroll() {
@@ -273,6 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	initMenuHoverIntent();
 	initNavSmoothScroll();
+	initBrandLogo();
 	initDynamicText();
 	initRevealAnimations();
 	initContactMap();

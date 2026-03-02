@@ -9,6 +9,14 @@ $logo_url = function_exists('agencia247_get_site_logo_url')
 
 $nav_cta_text = trim((string) agencia247_get_option('nav_cta_text'));
 $nav_cta_url  = agencia247_resolve_link((string) agencia247_get_option('nav_cta_url'));
+$brand_text   = trim((string) agencia247_get_option('brand_text'));
+$brand_intro  = function_exists('agencia247_sanitize_brand_intro_animation')
+	? agencia247_sanitize_brand_intro_animation((string) agencia247_get_option('brand_intro_animation'))
+	: 'drop';
+
+if ($brand_text === '') {
+	$brand_text = 'Agencia24•7';
+}
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -19,11 +27,11 @@ $nav_cta_url  = agencia247_resolve_link((string) agencia247_get_option('nav_cta_
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
-<nav class="site-nav" id="site-nav">
-	<a href="<?php echo esc_url(home_url('/')); ?>" class="logo">
+<nav class="site-nav" id="site-nav" data-brand-intro="<?php echo esc_attr($brand_intro); ?>">
+	<a href="<?php echo esc_url(home_url('/')); ?>" class="logo js-brand-logo">
 		<img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-		<div class="logo-fallback" style="display:none;">24/7</div>
-		<span class="logo-text"><?php bloginfo('name'); ?></span>
+		<div class="logo-fallback" style="display:none;">24•7</div>
+		<span class="logo-text"><?php echo esc_html($brand_text); ?></span>
 	</a>
 
 	<?php

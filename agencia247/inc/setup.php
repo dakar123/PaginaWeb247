@@ -17,6 +17,50 @@ if (!function_exists('agencia247_sanitize_whatsapp_number')) {
 	}
 }
 
+if (!function_exists('agencia247_sanitize_brand_intro_animation')) {
+	function agencia247_sanitize_brand_intro_animation($value) {
+		$allowed = array('none', 'fade', 'slide', 'drop');
+		return in_array((string) $value, $allowed, true) ? (string) $value : 'drop';
+	}
+}
+
+if (!function_exists('agencia247_sanitize_dropdown_delay')) {
+	function agencia247_sanitize_dropdown_delay($value) {
+		$delay = absint($value);
+		if ($delay < 80) {
+			return 80;
+		}
+		if ($delay > 800) {
+			return 800;
+		}
+		return $delay;
+	}
+}
+
+if (!function_exists('agencia247_sanitize_latitude')) {
+	function agencia247_sanitize_latitude($value) {
+		$lat = is_numeric($value) ? (float) $value : -15.840691174561973;
+		$lat = max(-90, min(90, $lat));
+		return (string) $lat;
+	}
+}
+
+if (!function_exists('agencia247_sanitize_longitude')) {
+	function agencia247_sanitize_longitude($value) {
+		$lon = is_numeric($value) ? (float) $value : -70.02602661165675;
+		$lon = max(-180, min(180, $lon));
+		return (string) $lon;
+	}
+}
+
+if (!function_exists('agencia247_sanitize_map_zoom')) {
+	function agencia247_sanitize_map_zoom($value) {
+		$zoom = is_numeric($value) ? (float) $value : 13.4;
+		$zoom = max(2, min(20, $zoom));
+		return (string) $zoom;
+	}
+}
+
 if (!function_exists('agencia247_get_url_context_path')) {
 	function agencia247_get_url_context_path($url) {
 		$path = (string) wp_parse_url((string) $url, PHP_URL_PATH);
@@ -294,8 +338,12 @@ function agencia247_fonts_url() {
  */
 function agencia247_enqueue_assets() {
 	$version = wp_get_theme()->get('Version');
-	$map_lat = -15.840691174561973;
-	$map_lon = -70.02602661165675;
+	$map_enabled_raw = agencia247_get_option('contact_map_enabled');
+	$map_enabled = ($map_enabled_raw === '' || $map_enabled_raw === null) ? true : (bool) $map_enabled_raw;
+	$map_lat = (float) agencia247_sanitize_latitude(agencia247_get_option('contact_map_lat'));
+	$map_lon = (float) agencia247_sanitize_longitude(agencia247_get_option('contact_map_lon'));
+	$map_zoom = (float) agencia247_sanitize_map_zoom(agencia247_get_option('contact_map_zoom'));
+	$dropdown_delay = agencia247_sanitize_dropdown_delay(agencia247_get_option('nav_dropdown_delay'));
 	$main_script_deps = array();
 
 	wp_enqueue_style('agencia247-fonts', agencia247_fonts_url(), array(), null);
@@ -307,7 +355,7 @@ function agencia247_enqueue_assets() {
 		$version
 	);
 
-	if (agencia247_is_section_enabled('contact') && is_front_page()) {
+	if ($map_enabled) {
 		wp_enqueue_style('agencia247-openlayers', 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css', array(), '10.6.1');
 		wp_enqueue_script('agencia247-openlayers', 'https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js', array(), '10.6.1', true);
 		$main_script_deps[] = 'agencia247-openlayers';
@@ -326,14 +374,21 @@ function agencia247_enqueue_assets() {
 		'agencia247Theme',
 		array(
 			'map' => array(
+				'enabled' => $map_enabled ? 1 : 0,
 				'lat'     => $map_lat,
 				'lon'     => $map_lon,
+				'zoom'    => $map_zoom,
+				'radar'   => (bool) agencia247_get_option('contact_map_radar') ? 1 : 0,
 				'logoUrl' => agencia247_get_site_logo_url(),
 			),
 			'wa'  => array(
 				'number'      => agencia247_get_whatsapp_number(),
 				'currentUrl'  => agencia247_get_current_whatsapp_url(),
 				'currentText' => agencia247_build_whatsapp_message(agencia247_get_current_request_context_path(), wp_get_document_title()),
+			),
+			'ui' => array(
+				'brandIntro'        => agencia247_sanitize_brand_intro_animation((string) agencia247_get_option('brand_intro_animation')),
+				'navDropdownDelay'  => $dropdown_delay,
 			),
 		)
 	);

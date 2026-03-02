@@ -195,6 +195,66 @@ function agencia247_customize_register($wp_customize) {
 		)
 	);
 
+	$wp_customize->add_setting(
+		'brand_text',
+		array(
+			'default'           => $defaults['brand_text'],
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'brand_text',
+		array(
+			'label'       => __('Brand Text', 'agencia247'),
+			'section'     => 'agencia247_section_header',
+			'type'        => 'text',
+			'description' => __('Example: Agencia24•7', 'agencia247'),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'brand_intro_animation',
+		array(
+			'default'           => $defaults['brand_intro_animation'],
+			'sanitize_callback' => 'agencia247_sanitize_brand_intro_animation',
+		)
+	);
+	$wp_customize->add_control(
+		'brand_intro_animation',
+		array(
+			'label'   => __('Brand Intro Animation', 'agencia247'),
+			'section' => 'agencia247_section_header',
+			'type'    => 'select',
+			'choices' => array(
+				'drop'  => __('Drop', 'agencia247'),
+				'slide' => __('Slide', 'agencia247'),
+				'fade'  => __('Fade', 'agencia247'),
+				'none'  => __('None', 'agencia247'),
+			),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'nav_dropdown_delay',
+		array(
+			'default'           => $defaults['nav_dropdown_delay'],
+			'sanitize_callback' => 'agencia247_sanitize_dropdown_delay',
+		)
+	);
+	$wp_customize->add_control(
+		'nav_dropdown_delay',
+		array(
+			'label'       => __('Dropdown Close Delay (ms)', 'agencia247'),
+			'section'     => 'agencia247_section_header',
+			'type'        => 'number',
+			'input_attrs' => array(
+				'min'  => 80,
+				'max'  => 800,
+				'step' => 10,
+			),
+		)
+	);
+
 	$wp_customize->add_section(
 		'agencia247_section_hero',
 		array(
@@ -591,6 +651,62 @@ function agencia247_customize_register($wp_customize) {
 				'label'   => $label,
 				'section' => 'agencia247_section_contact',
 				'type'    => $type,
+			)
+		);
+	}
+
+	$map_fields = array(
+		'contact_map_enabled' => array(
+			'label'    => __('Show Contact Map', 'agencia247'),
+			'type'     => 'checkbox',
+			'sanitize' => 'agencia247_sanitize_checkbox',
+		),
+		'contact_map_lat' => array(
+			'label'    => __('Map Latitude', 'agencia247'),
+			'type'     => 'text',
+			'sanitize' => 'agencia247_sanitize_latitude',
+		),
+		'contact_map_lon' => array(
+			'label'    => __('Map Longitude', 'agencia247'),
+			'type'     => 'text',
+			'sanitize' => 'agencia247_sanitize_longitude',
+		),
+		'contact_map_zoom' => array(
+			'label'    => __('Map Zoom', 'agencia247'),
+			'type'     => 'text',
+			'sanitize' => 'agencia247_sanitize_map_zoom',
+		),
+		'contact_map_title' => array(
+			'label'    => __('Map Card Title', 'agencia247'),
+			'type'     => 'text',
+			'sanitize' => 'sanitize_text_field',
+		),
+		'contact_map_note' => array(
+			'label'    => __('Map Note', 'agencia247'),
+			'type'     => 'text',
+			'sanitize' => 'sanitize_text_field',
+		),
+		'contact_map_radar' => array(
+			'label'    => __('Show Radar Effect', 'agencia247'),
+			'type'     => 'checkbox',
+			'sanitize' => 'agencia247_sanitize_checkbox',
+		),
+	);
+
+	foreach ($map_fields as $key => $config) {
+		$wp_customize->add_setting(
+			$key,
+			array(
+				'default'           => $defaults[ $key ],
+				'sanitize_callback' => $config['sanitize'],
+			)
+		);
+		$wp_customize->add_control(
+			$key,
+			array(
+				'label'   => $config['label'],
+				'section' => 'agencia247_section_contact',
+				'type'    => $config['type'],
 			)
 		);
 	}

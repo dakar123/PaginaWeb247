@@ -35,6 +35,9 @@ function agencia247_get_defaults() {
 
 		'nav_cta_text'              => 'Hablemos',
 		'nav_cta_url'               => '/#contacto',
+		'brand_text'                => 'Agencia24•7',
+		'brand_intro_animation'     => 'drop',
+		'nav_dropdown_delay'        => 260,
 		'whatsapp_number'           => '',
 		'whatsapp_base_message'     => 'Hola, quiero informacion sobre sus servicios.',
 		'whatsapp_button_label'     => 'WhatsApp',
@@ -85,6 +88,13 @@ function agencia247_get_defaults() {
 		'contact_instagram_url'     => '#',
 		'contact_whatsapp_label'    => 'WhatsApp',
 		'contact_whatsapp_url'      => '#',
+		'contact_map_enabled'       => 1,
+		'contact_map_lat'           => '-15.840691174561973',
+		'contact_map_lon'           => '-70.02602661165675',
+		'contact_map_zoom'          => '13.4',
+		'contact_map_title'         => 'Ubicacion de referencia',
+		'contact_map_note'          => 'Explora el mapa y acercate para ver mejor la zona.',
+		'contact_map_radar'         => 1,
 
 		'footer_text'               => 'Agencia 24/7 - Todos los derechos reservados',
 		'footer_accent'             => 'Disponibles 24 horas, 7 dias',
@@ -219,6 +229,70 @@ function agencia247_sanitize_int($value) {
 function agencia247_sanitize_font_choice($value) {
 	$choices = agencia247_font_choices();
 	return isset($choices[ $value ]) ? $value : 'DM Sans';
+}
+
+/**
+ * Sanitize brand intro animation style.
+ *
+ * @param string $value Value.
+ * @return string
+ */
+function agencia247_sanitize_brand_intro_animation($value) {
+	$allowed = array('none', 'fade', 'slide', 'drop');
+	return in_array((string) $value, $allowed, true) ? (string) $value : 'drop';
+}
+
+/**
+ * Sanitize dropdown delay.
+ *
+ * @param mixed $value Delay value.
+ * @return int
+ */
+function agencia247_sanitize_dropdown_delay($value) {
+	$delay = absint($value);
+	if ($delay < 80) {
+		return 80;
+	}
+	if ($delay > 800) {
+		return 800;
+	}
+	return $delay;
+}
+
+/**
+ * Sanitize latitude.
+ *
+ * @param mixed $value Raw value.
+ * @return string
+ */
+function agencia247_sanitize_latitude($value) {
+	$lat = is_numeric($value) ? (float) $value : -15.840691174561973;
+	$lat = max(-90, min(90, $lat));
+	return (string) $lat;
+}
+
+/**
+ * Sanitize longitude.
+ *
+ * @param mixed $value Raw value.
+ * @return string
+ */
+function agencia247_sanitize_longitude($value) {
+	$lon = is_numeric($value) ? (float) $value : -70.02602661165675;
+	$lon = max(-180, min(180, $lon));
+	return (string) $lon;
+}
+
+/**
+ * Sanitize map zoom.
+ *
+ * @param mixed $value Raw value.
+ * @return string
+ */
+function agencia247_sanitize_map_zoom($value) {
+	$zoom = is_numeric($value) ? (float) $value : 13.4;
+	$zoom = max(2, min(20, $zoom));
+	return (string) $zoom;
 }
 
 /**
@@ -499,7 +573,12 @@ function agencia247_get_service_url($post_id) {
  * Fallback primary menu.
  */
 function agencia247_primary_menu_fallback() {
-	$menu = array();
+	$menu = array(
+		array(
+			'label' => 'Inicio',
+			'url'   => home_url('/'),
+		),
+	);
 
 	if (agencia247_is_section_enabled('services')) {
 		$services_submenu = array();
@@ -541,6 +620,29 @@ function agencia247_primary_menu_fallback() {
 			'label' => 'Contacto',
 			'url'   => home_url('/#contacto'),
 		);
+	}
+
+	$extra_pages = get_pages(
+		array(
+			'parent'      => 0,
+			'sort_column' => 'menu_order,post_title',
+			'sort_order'  => 'ASC',
+			'number'      => 5,
+		)
+	);
+	if (!empty($extra_pages)) {
+		foreach ($extra_pages as $page_item) {
+			$page_title = trim((string) $page_item->post_title);
+			$page_url   = get_permalink($page_item->ID);
+			if ($page_title === '' || $page_url === '' || $page_url === home_url('/')) {
+				continue;
+			}
+
+			$menu[] = array(
+				'label' => $page_title,
+				'url'   => $page_url,
+			);
+		}
 	}
 
 	echo '<ul class="primary-menu">';
