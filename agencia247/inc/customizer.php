@@ -204,6 +204,64 @@ function agencia247_customize_register($wp_customize) {
 		)
 	);
 
+	$wp_customize->add_section(
+		'agencia247_section_whatsapp',
+		array(
+			'title'    => __('WhatsApp Button', 'agencia247'),
+			'panel'    => 'agencia247_panel',
+			'priority' => 18,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'whatsapp_number',
+		array(
+			'default'           => $defaults['whatsapp_number'],
+			'sanitize_callback' => 'agencia247_sanitize_whatsapp_number',
+		)
+	);
+	$wp_customize->add_control(
+		'whatsapp_number',
+		array(
+			'label'       => __('WhatsApp Number (with country code)', 'agencia247'),
+			'section'     => 'agencia247_section_whatsapp',
+			'type'        => 'text',
+			'description' => __('Use numbers only, for example: 51987654321', 'agencia247'),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'whatsapp_base_message',
+		array(
+			'default'           => $defaults['whatsapp_base_message'],
+			'sanitize_callback' => 'sanitize_textarea_field',
+		)
+	);
+	$wp_customize->add_control(
+		'whatsapp_base_message',
+		array(
+			'label'   => __('Base Prefilled Message', 'agencia247'),
+			'section' => 'agencia247_section_whatsapp',
+			'type'    => 'textarea',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'whatsapp_button_label',
+		array(
+			'default'           => $defaults['whatsapp_button_label'],
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'whatsapp_button_label',
+		array(
+			'label'   => __('Floating Button Label', 'agencia247'),
+			'section' => 'agencia247_section_whatsapp',
+			'type'    => 'text',
+		)
+	);
+
 	$hero_text_fields = array(
 		'hero_tag'                => __('Hero Tagline', 'agencia247'),
 		'hero_title'              => __('Hero Title (use line breaks)', 'agencia247'),

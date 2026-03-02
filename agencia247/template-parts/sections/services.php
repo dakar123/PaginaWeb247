@@ -61,6 +61,7 @@ $fallback_cards = array(
 				$service_url  = agencia247_get_service_url($post_id);
 				$service_tags = agencia247_get_service_tags($post_id);
 				$service_desc = get_the_excerpt();
+				$service_wa   = agencia247_get_whatsapp_url_for_post($post_id);
 				if ($service_desc === '') {
 					$service_desc = wp_trim_words(wp_strip_all_tags(get_the_content()), 24);
 				}
@@ -83,6 +84,12 @@ $fallback_cards = array(
 								<?php endforeach; ?>
 							</div>
 						<?php endif; ?>
+						<div class="service-actions">
+							<a class="service-cta-btn" href="<?php echo esc_url($service_url); ?>"><?php esc_html_e('Ver detalle', 'agencia247'); ?></a>
+							<?php if ($service_wa !== '') : ?>
+								<a class="service-cta-btn service-cta-btn--wa" href="<?php echo esc_url($service_wa); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Solicitar servicio', 'agencia247'); ?></a>
+							<?php endif; ?>
+						</div>
 					</div>
 					<a class="service-card-link" href="<?php echo esc_url($service_url); ?>" aria-label="<?php echo esc_attr(get_the_title()); ?>"></a>
 				</article>
@@ -103,6 +110,12 @@ $fallback_cards = array(
 								<span class="stag"><?php echo esc_html($tag); ?></span>
 							<?php endforeach; ?>
 						</div>
+						<?php $fallback_wa = agencia247_get_whatsapp_url(agencia247_build_whatsapp_message('servicios', $card['title'])); ?>
+						<?php if ($fallback_wa !== '') : ?>
+							<div class="service-actions">
+								<a class="service-cta-btn service-cta-btn--wa" href="<?php echo esc_url($fallback_wa); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Solicitar servicio', 'agencia247'); ?></a>
+							</div>
+						<?php endif; ?>
 					</div>
 				</article>
 			<?php endforeach; ?>

@@ -35,6 +35,9 @@ function agencia247_get_defaults() {
 
 		'nav_cta_text'              => 'Hablemos',
 		'nav_cta_url'               => '/#contacto',
+		'whatsapp_number'           => '',
+		'whatsapp_base_message'     => 'Hola, quiero informacion sobre sus servicios.',
+		'whatsapp_button_label'     => 'WhatsApp',
 
 		'hero_tag'                  => 'Marketing & Produccion Integral',
 		'hero_title'                => "Tu marca\nal siguiente\nnivel.",
@@ -216,6 +219,222 @@ function agencia247_sanitize_int($value) {
 function agencia247_sanitize_font_choice($value) {
 	$choices = agencia247_font_choices();
 	return isset($choices[ $value ]) ? $value : 'DM Sans';
+}
+
+/**
+ * Sanitize WhatsApp number to digits only.
+ *
+ * @param string $value Raw value.
+ * @return string
+ */
+function agencia247_sanitize_whatsapp_number($value) {
+	$value = preg_replace('/[^0-9]/', '', (string) $value);
+	return substr((string) $value, 0, 20);
+}
+
+/**
+ * Build absolute path context from URL.
+ *
+ * @param string $url URL.
+ * @return string
+ */
+function agencia247_get_url_context_path($url) {
+	$path = (string) wp_parse_url((string) $url, PHP_URL_PATH);
+	$path = trim($path, '/');
+	return ($path === '') ? 'inicio' : $path;
+}
+
+/**
+ * Get current request path context.
+ *
+ * @return string
+ */
+function agencia247_get_current_request_context_path() {
+	$request = '';
+	global $wp;
+
+	if (isset($wp) && isset($wp->request)) {
+		$request = trim((string) $wp->request, '/');
+	}
+
+	if ($request === '') {
+		$uri      = isset($_SERVER['REQUEST_URI']) ? (string) wp_unslash($_SERVER['REQUEST_URI']) : '';
+		$uri_path = (string) wp_parse_url($uri, PHP_URL_PATH);
+		$home_path = trim((string) wp_parse_url(home_url('/'), PHP_URL_PATH), '/');
+
+		$uri_path = trim($uri_path, '/');
+		if ($home_path !== '' && strpos($uri_path, $home_path) === 0) {
+			$uri_path = trim(substr($uri_path, strlen($home_path)), '/');
+		}
+
+		$request = $uri_path;
+	}
+
+	return ($request === '') ? 'inicio' : $request;
+}
+
+/**
+ * Resolve site logo URL.
+ *
+ * @return string
+ */
+function agencia247_get_site_logo_url() {
+	$logo_url = agencia247_theme_image_url('logo.png');
+
+	if (has_custom_logo()) {
+		$logo_id          = (int) get_theme_mod('custom_logo');
+		$custom_logo_data = wp_get_attachment_image_src($logo_id, 'full');
+		if (!empty($custom_logo_data[0])) {
+			$logo_url = $custom_logo_data[0];
+		}
+	}
+
+	return $logo_url;
+}
+
+/**
+ * Get configured WhatsApp number.
+ *
+ * @return string
+ */
+function agencia247_get_whatsapp_number() {
+	$number = agencia247_sanitize_whatsapp_number((string) agencia247_get_option('whatsapp_number'));
+	if ($number !== '') {
+		return $number;
+	}
+
+	$legacy_url = trim((string) agencia247_get_option('contact_whatsapp_url'));
+	if ($legacy_url === '') {
+		return '';
+	}
+
+	$legacy_path = (string) wp_parse_url($legacy_url, PHP_URL_PATH);
+	$legacy_query = (string) wp_parse_url($legacy_url, PHP_URL_QUERY);
+	$candidate = '';
+
+	if (strpos($legacy_url, 'wa.me/') !== false && $legacy_path !== '') {
+		$candidate = trim($legacy_path, '/');
+	}
+	if ($candidate === '' && strpos($legacy_url, 'api.whatsapp.com') !== false && $legacy_query !== '') {
+		parse_str($legacy_query, $query_args);
+		$candidate = isset($query_args['phone']) ? (string) $query_args['phone'] : '';
+	}
+
+	return agencia247_sanitize_whatsapp_number($candidate);
+}
+
+/**
+ * Build WhatsApp message with context.
+ *
+ * @param string $context Context path.
+ * @param string $title Optional service/page title.
+ * @return string
+ */
+function agencia247_build_whatsapp_message($context = '', $title = '') {
+	$base_message = trim((string) agencia247_get_option('whatsapp_base_message'));
+	if ($base_message === '') {
+		$base_message = 'Hola, quiero informacion sobre sus servicios.';
+	}
+
+	$parts = array($base_message);
+
+	$title = trim((string) $title);
+	if ($title !== '') {
+		$parts[] = 'Me interesa: ' . $title . '.';
+	}
+
+	$context = trim((string) $context);
+	if ($context !== '') {
+		$parts[] = 'Pagina de referencia: /' . trim($context, '/') . '/.';
+	}
+
+	$parts[] = 'Quisiera una cotizacion y detalles, por favor.';
+
+	return implode(' ', $parts);
+}
+
+/**
+ * Build a wa.me URL.
+ *
+ * @param string $message Prefilled message.
+ * @return string
+ */
+function agencia247_get_whatsapp_url($message = '') {
+	$number = agencia247_get_whatsapp_number();
+	if ($number === '') {
+		return '';
+	}
+
+	$url = 'https://wa.me/' . $number;
+	$message = trim((string) $message);
+	if ($message !== '') {
+		$url .= '?text=' . rawurlencode($message);
+	}
+
+	return $url;
+}
+
+/**
+ * Build WhatsApp URL based on current request context.
+ *
+ * @return string
+ */
+function agencia247_get_current_whatsapp_url() {
+	$context = 'inicio';
+	$title   = wp_get_document_title();
+
+	if (is_singular()) {
+		$post = get_queried_object();
+		if ($post instanceof WP_Post) {
+			$context = agencia247_get_url_context_path(get_permalink($post));
+			$title   = get_the_title($post);
+		}
+	} elseif (is_post_type_archive()) {
+		$post_type_obj = get_queried_object();
+		if (isset($post_type_obj->name)) {
+			$context = agencia247_get_url_context_path(get_post_type_archive_link($post_type_obj->name));
+		}
+		$title = post_type_archive_title('', false);
+	} elseif (is_tax() || is_category() || is_tag()) {
+		$term_link = get_term_link(get_queried_object());
+		if (!is_wp_error($term_link)) {
+			$context = agencia247_get_url_context_path($term_link);
+		}
+		$title = single_term_title('', false);
+	} else {
+		$context = agencia247_get_current_request_context_path();
+	}
+
+	$message = agencia247_build_whatsapp_message($context, $title);
+
+	return agencia247_get_whatsapp_url($message);
+}
+
+/**
+ * Build WhatsApp URL for a post.
+ *
+ * @param int    $post_id Post ID.
+ * @param string $custom_context Optional custom context path.
+ * @return string
+ */
+function agencia247_get_whatsapp_url_for_post($post_id = 0, $custom_context = '') {
+	$post_id = (int) $post_id;
+	$title   = '';
+	$context = trim((string) $custom_context);
+
+	if ($post_id > 0) {
+		$title = get_the_title($post_id);
+		if ($context === '') {
+			$context = agencia247_get_url_context_path(get_permalink($post_id));
+		}
+	}
+
+	if ($context === '') {
+		$context = agencia247_get_url_context_path(home_url('/'));
+	}
+
+	$message = agencia247_build_whatsapp_message($context, $title);
+	return agencia247_get_whatsapp_url($message);
 }
 
 /**

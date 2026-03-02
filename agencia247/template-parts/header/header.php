@@ -3,14 +3,7 @@
  * Theme document header and navigation.
  */
 
-$logo_url = agencia247_theme_image_url('logo.png');
-if (has_custom_logo()) {
-	$logo_id          = (int) get_theme_mod('custom_logo');
-	$custom_logo_data = wp_get_attachment_image_src($logo_id, 'full');
-	if (!empty($custom_logo_data[0])) {
-		$logo_url = $custom_logo_data[0];
-	}
-}
+$logo_url = agencia247_get_site_logo_url();
 
 $nav_cta_text = trim((string) agencia247_get_option('nav_cta_text'));
 $nav_cta_url  = agencia247_resolve_link((string) agencia247_get_option('nav_cta_url'));
@@ -24,7 +17,7 @@ $nav_cta_url  = agencia247_resolve_link((string) agencia247_get_option('nav_cta_
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
-<nav>
+<nav class="site-nav" id="site-nav">
 	<a href="<?php echo esc_url(home_url('/')); ?>" class="logo">
 		<img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
 		<div class="logo-fallback" style="display:none;">24/7</div>

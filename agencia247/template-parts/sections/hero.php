@@ -15,6 +15,25 @@ $hero_btn_secondary_text = trim((string) agencia247_get_option('hero_btn_seconda
 $hero_btn_secondary_url  = agencia247_resolve_link((string) agencia247_get_option('hero_btn_secondary_url'));
 $hero_badge_text         = trim((string) agencia247_get_option('hero_badge_text'));
 $hero_badge_sub          = trim((string) agencia247_get_option('hero_badge_sub'));
+$hero_wa_url             = agencia247_get_whatsapp_url_for_post(0, 'inicio');
+
+$dynamic_words = array('Campanas digitales', 'Diseno grafico', 'Produccion audiovisual');
+$dynamic_query = get_posts(
+	array(
+		'post_type'      => 'agencia_service',
+		'post_status'    => 'publish',
+		'posts_per_page' => 4,
+		'orderby'        => array('menu_order' => 'ASC', 'date' => 'DESC'),
+		'fields'         => 'ids',
+	)
+);
+
+if (!empty($dynamic_query)) {
+	$dynamic_words = array();
+	foreach ($dynamic_query as $service_id) {
+		$dynamic_words[] = get_the_title($service_id);
+	}
+}
 ?>
 <section id="hero">
 	<div class="hero-bg-img" style="background-image:url('<?php echo esc_url($hero_bg_url); ?>');"></div>
@@ -31,6 +50,12 @@ $hero_badge_sub          = trim((string) agencia247_get_option('hero_badge_sub')
 		<?php if ($hero_sub !== '') : ?>
 			<p class="hero-sub"><?php echo esc_html($hero_sub); ?></p>
 		<?php endif; ?>
+		<div class="hero-dynamic-wrap" aria-live="polite">
+			<span class="hero-dynamic-label"><?php esc_html_e('Especialistas en', 'agencia247'); ?></span>
+			<span class="hero-dynamic js-dynamic-text" data-words="<?php echo esc_attr(implode('|', array_map('sanitize_text_field', $dynamic_words))); ?>">
+				<?php echo esc_html($dynamic_words[0]); ?>
+			</span>
+		</div>
 
 		<div class="hero-actions">
 			<?php if ($hero_btn_primary_text !== '') : ?>
@@ -38,6 +63,9 @@ $hero_badge_sub          = trim((string) agencia247_get_option('hero_badge_sub')
 			<?php endif; ?>
 			<?php if ($hero_btn_secondary_text !== '') : ?>
 				<a href="<?php echo esc_url($hero_btn_secondary_url); ?>" class="btn-ghost"><?php echo esc_html($hero_btn_secondary_text); ?></a>
+			<?php endif; ?>
+			<?php if ($hero_wa_url !== '') : ?>
+				<a href="<?php echo esc_url($hero_wa_url); ?>" class="btn-primary btn-primary--wa" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Solicitar servicio', 'agencia247'); ?></a>
 			<?php endif; ?>
 		</div>
 	</div>
