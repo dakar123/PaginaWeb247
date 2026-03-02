@@ -8,6 +8,179 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Compatibility shims to avoid fatals if helpers.php is outdated in production.
+ */
+if (!function_exists('agencia247_sanitize_whatsapp_number')) {
+	function agencia247_sanitize_whatsapp_number($value) {
+		$value = preg_replace('/[^0-9]/', '', (string) $value);
+		return substr((string) $value, 0, 20);
+	}
+}
+
+if (!function_exists('agencia247_get_url_context_path')) {
+	function agencia247_get_url_context_path($url) {
+		$path = (string) wp_parse_url((string) $url, PHP_URL_PATH);
+		$path = trim($path, '/');
+		return ($path === '') ? 'inicio' : $path;
+	}
+}
+
+if (!function_exists('agencia247_get_current_request_context_path')) {
+	function agencia247_get_current_request_context_path() {
+		$request = '';
+		global $wp;
+
+		if (isset($wp) && isset($wp->request)) {
+			$request = trim((string) $wp->request, '/');
+		}
+
+		if ($request === '') {
+			$uri      = isset($_SERVER['REQUEST_URI']) ? (string) wp_unslash($_SERVER['REQUEST_URI']) : '';
+			$uri_path = (string) wp_parse_url($uri, PHP_URL_PATH);
+			$home_path = trim((string) wp_parse_url(home_url('/'), PHP_URL_PATH), '/');
+
+			$uri_path = trim($uri_path, '/');
+			if ($home_path !== '' && strpos($uri_path, $home_path) === 0) {
+				$uri_path = trim(substr($uri_path, strlen($home_path)), '/');
+			}
+
+			$request = $uri_path;
+		}
+
+		return ($request === '') ? 'inicio' : $request;
+	}
+}
+
+if (!function_exists('agencia247_get_site_logo_url')) {
+	function agencia247_get_site_logo_url() {
+		$logo_url = function_exists('agencia247_theme_image_url')
+			? agencia247_theme_image_url('logo.png')
+			: get_template_directory_uri() . '/images/image.png';
+
+		if (has_custom_logo()) {
+			$logo_id          = (int) get_theme_mod('custom_logo');
+			$custom_logo_data = wp_get_attachment_image_src($logo_id, 'full');
+			if (!empty($custom_logo_data[0])) {
+				$logo_url = $custom_logo_data[0];
+			}
+		}
+
+		return $logo_url;
+	}
+}
+
+if (!function_exists('agencia247_get_whatsapp_number')) {
+	function agencia247_get_whatsapp_number() {
+		$number = '';
+		if (function_exists('agencia247_get_option')) {
+			$number = (string) agencia247_get_option('whatsapp_number');
+		} else {
+			$number = (string) get_theme_mod('whatsapp_number', '');
+		}
+		$number = agencia247_sanitize_whatsapp_number($number);
+		if ($number !== '') {
+			return $number;
+		}
+
+		$legacy_url = function_exists('agencia247_get_option')
+			? (string) agencia247_get_option('contact_whatsapp_url')
+			: (string) get_theme_mod('contact_whatsapp_url', '');
+
+		$legacy_path = (string) wp_parse_url($legacy_url, PHP_URL_PATH);
+		$legacy_query = (string) wp_parse_url($legacy_url, PHP_URL_QUERY);
+		$candidate = '';
+
+		if (strpos($legacy_url, 'wa.me/') !== false && $legacy_path !== '') {
+			$candidate = trim($legacy_path, '/');
+		}
+		if ($candidate === '' && strpos($legacy_url, 'api.whatsapp.com') !== false && $legacy_query !== '') {
+			parse_str($legacy_query, $query_args);
+			$candidate = isset($query_args['phone']) ? (string) $query_args['phone'] : '';
+		}
+
+		return agencia247_sanitize_whatsapp_number($candidate);
+	}
+}
+
+if (!function_exists('agencia247_build_whatsapp_message')) {
+	function agencia247_build_whatsapp_message($context = '', $title = '') {
+		$base_message = function_exists('agencia247_get_option')
+			? trim((string) agencia247_get_option('whatsapp_base_message'))
+			: trim((string) get_theme_mod('whatsapp_base_message', ''));
+		if ($base_message === '') {
+			$base_message = 'Hola, quiero informacion sobre sus servicios.';
+		}
+
+		$parts = array($base_message);
+		$title = trim((string) $title);
+		$context = trim((string) $context);
+
+		if ($title !== '') {
+			$parts[] = 'Me interesa: ' . $title . '.';
+		}
+		if ($context !== '') {
+			$parts[] = 'Pagina de referencia: /' . trim($context, '/') . '/.';
+		}
+		$parts[] = 'Quisiera una cotizacion y detalles, por favor.';
+
+		return implode(' ', $parts);
+	}
+}
+
+if (!function_exists('agencia247_get_whatsapp_url')) {
+	function agencia247_get_whatsapp_url($message = '') {
+		$number = agencia247_get_whatsapp_number();
+		if ($number === '') {
+			return '';
+		}
+		$url = 'https://wa.me/' . $number;
+		$message = trim((string) $message);
+		if ($message !== '') {
+			$url .= '?text=' . rawurlencode($message);
+		}
+		return $url;
+	}
+}
+
+if (!function_exists('agencia247_get_current_whatsapp_url')) {
+	function agencia247_get_current_whatsapp_url() {
+		$context = agencia247_get_current_request_context_path();
+		$title = wp_get_document_title();
+
+		if (is_singular()) {
+			$post = get_queried_object();
+			if ($post instanceof WP_Post) {
+				$context = agencia247_get_url_context_path(get_permalink($post));
+				$title = get_the_title($post);
+			}
+		}
+
+		return agencia247_get_whatsapp_url(agencia247_build_whatsapp_message($context, $title));
+	}
+}
+
+if (!function_exists('agencia247_get_whatsapp_url_for_post')) {
+	function agencia247_get_whatsapp_url_for_post($post_id = 0, $custom_context = '') {
+		$post_id = (int) $post_id;
+		$title   = '';
+		$context = trim((string) $custom_context);
+
+		if ($post_id > 0) {
+			$title = get_the_title($post_id);
+			if ($context === '') {
+				$context = agencia247_get_url_context_path(get_permalink($post_id));
+			}
+		}
+
+		if ($context === '') {
+			$context = 'inicio';
+		}
+
+		return agencia247_get_whatsapp_url(agencia247_build_whatsapp_message($context, $title));
+	}
+}
+
+/**
  * Convert HEX color to rgba().
  *
  * @param string $hex Hex color.

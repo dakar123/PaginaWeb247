@@ -3,7 +3,9 @@
  * Theme document header and navigation.
  */
 
-$logo_url = agencia247_get_site_logo_url();
+$logo_url = function_exists('agencia247_get_site_logo_url')
+	? agencia247_get_site_logo_url()
+	: (function_exists('agencia247_theme_image_url') ? agencia247_theme_image_url('logo.png') : get_template_directory_uri() . '/images/image.png');
 
 $nav_cta_text = trim((string) agencia247_get_option('nav_cta_text'));
 $nav_cta_url  = agencia247_resolve_link((string) agencia247_get_option('nav_cta_url'));
