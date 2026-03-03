@@ -17,6 +17,8 @@ $map_enabled   = ($map_enabled_raw === '' || $map_enabled_raw === null) ? true :
 $map_title     = trim((string) agencia247_get_option('contact_map_title'));
 $map_note      = trim((string) agencia247_get_option('contact_map_note'));
 $map_radar     = (bool) agencia247_get_option('contact_map_radar');
+$map_address   = trim((string) agencia247_get_option('contact_map_address'));
+$map_popup     = trim((string) agencia247_get_option('contact_map_popup'));
 $map_lat_float = (float) $map_lat;
 $map_lon_float = (float) $map_lon;
 $map_bbox_pad  = 0.03;
@@ -43,6 +45,12 @@ if ($map_title === '') {
 }
 if ($map_note === '') {
 	$map_note = __('Explora el mapa y acercate para ver mejor la zona.', 'agencia247');
+}
+if ($map_address === '') {
+	$map_address = 'Jr Moquegua 452';
+}
+if ($map_popup === '') {
+	$map_popup = __('Punto de referencia para visitas y coordinaciones.', 'agencia247');
 }
 
 $social_items = array(
@@ -122,6 +130,9 @@ $social_items = array(
 					data-enabled="<?php echo $map_enabled ? '1' : '0'; ?>"
 					data-radar="<?php echo $map_radar ? '1' : '0'; ?>"
 					data-logo-url="<?php echo esc_url($map_logo_url); ?>"
+					data-map-title="<?php echo esc_attr($map_title); ?>"
+					data-address="<?php echo esc_attr($map_address); ?>"
+					data-popup-text="<?php echo esc_attr($map_popup); ?>"
 					data-loading-text="<?php echo esc_attr__('Cargando mapa...', 'agencia247'); ?>"
 					data-error-text="<?php echo esc_attr__('No se pudo cargar el mapa en este momento.', 'agencia247'); ?>"
 					data-disabled-text="<?php echo esc_attr__('Mapa desactivado desde el personalizador.', 'agencia247'); ?>"

@@ -462,9 +462,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		};
 	}
 
-	function createMapMarker(logoUrl, radarEnabled) {
+	function createMapMarker(logoUrl, radarEnabled, address, mapTitle) {
 		var markerElement = document.createElement('div');
 		markerElement.className = 'contact-map-marker';
+		var markerLabel = address || mapTitle || 'Ubicacion de referencia';
+		markerElement.setAttribute('role', 'button');
+		markerElement.setAttribute('tabindex', '0');
+		markerElement.setAttribute('title', markerLabel);
+		markerElement.setAttribute('aria-label', 'Ver ubicacion: ' + markerLabel);
 
 		if (radarEnabled) {
 			var radarElement = document.createElement('div');
@@ -506,6 +511,34 @@ document.addEventListener('DOMContentLoaded', function() {
 		return markerElement;
 	}
 
+	function createMapPopupContent(mapTitle, address, popupText) {
+		var popupContainer = document.createElement('div');
+		popupContainer.className = 'contact-map-popup-content';
+
+		if (mapTitle) {
+			var popupTitle = document.createElement('p');
+			popupTitle.className = 'contact-map-popup-title';
+			popupTitle.textContent = mapTitle;
+			popupContainer.appendChild(popupTitle);
+		}
+
+		if (address) {
+			var popupAddress = document.createElement('p');
+			popupAddress.className = 'contact-map-popup-address';
+			popupAddress.textContent = address;
+			popupContainer.appendChild(popupAddress);
+		}
+
+		if (popupText) {
+			var popupBody = document.createElement('p');
+			popupBody.className = 'contact-map-popup-body';
+			popupBody.textContent = popupText;
+			popupContainer.appendChild(popupBody);
+		}
+
+		return popupContainer;
+	}
+
 	function renderContactMap(mapElement) {
 		if (!mapElement) {
 			return false;
@@ -528,6 +561,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		var zoom = Number.isFinite(datasetZoom) ? datasetZoom : parseFloat(localizedMap.zoom || '13.4');
 		var logoUrl = mapElement.getAttribute('data-logo-url') || localizedMap.logoUrl || '';
 		var radarEnabled = mapElement.getAttribute('data-radar') === '1' || parseInt(localizedMap.radar, 10) === 1;
+		var mapTitle = mapElement.getAttribute('data-map-title') || 'Ubicacion de referencia';
+		var mapAddress = mapElement.getAttribute('data-address') || '';
+		var mapPopupText = mapElement.getAttribute('data-popup-text') || '';
 
 		if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
 			activateMapFallback(mapElement);
@@ -555,10 +591,54 @@ document.addEventListener('DOMContentLoaded', function() {
 				map.touchPitch.disable();
 			}
 
+			var markerElement = createMapMarker(logoUrl, radarEnabled, mapAddress, mapTitle);
 			new window.maplibregl.Marker({
-				element: createMapMarker(logoUrl, radarEnabled),
+				element: markerElement,
 				anchor: 'center'
 			}).setLngLat([lon, lat]).addTo(map);
+
+			var markerPopup = new window.maplibregl.Popup({
+				offset: 26,
+				closeButton: true,
+				closeOnClick: true,
+				className: 'contact-map-popup'
+			}).setLngLat([lon, lat]).setDOMContent(createMapPopupContent(mapTitle, mapAddress, mapPopupText));
+
+			function focusMarkerLocation(openPopup) {
+				var baseZoom = Number.isFinite(zoom) ? zoom : 13.4;
+				var focusZoom = Math.min(Math.max(baseZoom + 2.2, 16.4), 18.6);
+
+				if (reducedMotion) {
+					map.jumpTo({
+						center: [lon, lat],
+						zoom: focusZoom
+					});
+				} else {
+					map.easeTo({
+						center: [lon, lat],
+						zoom: focusZoom,
+						duration: 900,
+						essential: true
+					});
+				}
+
+				if (openPopup) {
+					markerPopup.addTo(map);
+				}
+			}
+
+			markerElement.addEventListener('click', function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				focusMarkerLocation(true);
+			});
+
+			markerElement.addEventListener('keydown', function(event) {
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+					focusMarkerLocation(true);
+				}
+			});
 
 			map.on('load', function() {
 				mapElement.setAttribute('data-map-ready', '1');
