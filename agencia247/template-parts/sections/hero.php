@@ -15,7 +15,6 @@ $hero_btn_secondary_text = trim((string) agencia247_get_option('hero_btn_seconda
 $hero_btn_secondary_url  = agencia247_resolve_link((string) agencia247_get_option('hero_btn_secondary_url'));
 $hero_badge_text         = trim((string) agencia247_get_option('hero_badge_text'));
 $hero_badge_sub          = trim((string) agencia247_get_option('hero_badge_sub'));
-$hero_wa_url             = agencia247_get_whatsapp_url_for_post(0, 'inicio');
 
 $dynamic_words = array('Campanas digitales', 'Diseno grafico', 'Produccion audiovisual');
 $dynamic_query = get_posts(
@@ -63,9 +62,6 @@ if (!empty($dynamic_query)) {
 			<?php endif; ?>
 			<?php if ($hero_btn_secondary_text !== '') : ?>
 				<a href="<?php echo esc_url($hero_btn_secondary_url); ?>" class="btn-ghost"><?php echo esc_html($hero_btn_secondary_text); ?></a>
-			<?php endif; ?>
-			<?php if ($hero_wa_url !== '') : ?>
-				<a href="<?php echo esc_url($hero_wa_url); ?>" class="btn-primary btn-primary--wa" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Solicitar servicio', 'agencia247'); ?></a>
 			<?php endif; ?>
 		</div>
 	</div>

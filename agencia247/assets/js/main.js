@@ -478,7 +478,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function renderContactMap(mapElement) {
-		if (!mapElement || mapElement.getAttribute('data-map-ready') === '1' || mapElement.getAttribute('data-map-initializing') === '1' || typeof window.maplibregl === 'undefined') {
+		if (!mapElement) {
+			return false;
+		}
+
+		if (mapElement.getAttribute('data-map-ready') === '1' || mapElement.getAttribute('data-map-initializing') === '1') {
+			return true;
+		}
+
+		if (typeof window.maplibregl === 'undefined') {
 			return false;
 		}
 
