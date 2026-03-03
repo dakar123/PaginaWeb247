@@ -410,10 +410,12 @@ function agencia247_build_whatsapp_message($context = '', $title = '') {
 		$base_message = 'Hola, quiero informacion sobre sus servicios.';
 	}
 
-	$parts = array($base_message);
-
+	$context = strtolower(trim((string) $context));
 	$title = trim((string) $title);
-	if ($title !== '') {
+	$is_home_context = ($context === '' || $context === 'inicio' || $context === '/');
+	$parts = array($is_home_context ? 'Hola, quiero informacion sobre sus servicios.' : $base_message);
+
+	if (!$is_home_context && $title !== '') {
 		$parts[] = 'Me interesa: ' . $title . '.';
 	}
 
@@ -452,7 +454,10 @@ function agencia247_get_current_whatsapp_url() {
 	$context = 'inicio';
 	$title   = wp_get_document_title();
 
-	if (is_singular()) {
+	if (is_front_page() || is_home()) {
+		$context = 'inicio';
+		$title   = '';
+	} elseif (is_singular()) {
 		$post = get_queried_object();
 		if ($post instanceof WP_Post) {
 			$context = agencia247_get_url_context_path(get_permalink($post));

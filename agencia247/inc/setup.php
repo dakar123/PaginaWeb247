@@ -155,9 +155,11 @@ if (!function_exists('agencia247_build_whatsapp_message')) {
 			$base_message = 'Hola, quiero informacion sobre sus servicios.';
 		}
 
-		$parts = array($base_message);
+		$context = strtolower(trim((string) $context));
 		$title = trim((string) $title);
-		if ($title !== '') {
+		$is_home_context = ($context === '' || $context === 'inicio' || $context === '/');
+		$parts = array($is_home_context ? 'Hola, quiero informacion sobre sus servicios.' : $base_message);
+		if (!$is_home_context && $title !== '') {
 			$parts[] = 'Me interesa: ' . $title . '.';
 		}
 		$parts[] = 'Quisiera una cotizacion y detalles, por favor.';
@@ -183,15 +185,20 @@ if (!function_exists('agencia247_get_whatsapp_url')) {
 
 if (!function_exists('agencia247_get_current_whatsapp_url')) {
 	function agencia247_get_current_whatsapp_url() {
-		$context = agencia247_get_current_request_context_path();
+		$context = 'inicio';
 		$title = wp_get_document_title();
 
-		if (is_singular()) {
+		if (is_front_page() || is_home()) {
+			$context = 'inicio';
+			$title = '';
+		} elseif (is_singular()) {
 			$post = get_queried_object();
 			if ($post instanceof WP_Post) {
 				$context = agencia247_get_url_context_path(get_permalink($post));
 				$title = get_the_title($post);
 			}
+		} else {
+			$context = agencia247_get_current_request_context_path();
 		}
 
 		return agencia247_get_whatsapp_url(agencia247_build_whatsapp_message($context, $title));
@@ -351,10 +358,11 @@ function agencia247_enqueue_assets() {
 	);
 
 	if ($map_enabled) {
-		$openlayers_base = trailingslashit(get_template_directory_uri() . '/assets/vendor/openlayers');
-		wp_enqueue_style('agencia247-openlayers', $openlayers_base . 'ol.css', array(), '10.6.1');
-		wp_enqueue_script('agencia247-openlayers', $openlayers_base . 'ol.js', array(), '10.6.1', true);
-		$main_script_deps[] = 'agencia247-openlayers';
+		$maplibre_css_url = 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css';
+		$maplibre_js_url  = 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js';
+		wp_enqueue_style('agencia247-maplibre', $maplibre_css_url, array(), '4.7.1');
+		wp_enqueue_script('agencia247-maplibre', $maplibre_js_url, array(), '4.7.1', true);
+		$main_script_deps[] = 'agencia247-maplibre';
 	}
 
 	wp_enqueue_script(
@@ -370,18 +378,27 @@ function agencia247_enqueue_assets() {
 		'agencia247Theme',
 		array(
 			'map' => array(
-				'enabled'   => $map_enabled ? 1 : 0,
-				'lat'       => $map_lat,
-				'lon'       => $map_lon,
-				'zoom'      => $map_zoom,
-				'radar'     => (bool) agencia247_get_option('contact_map_radar') ? 1 : 0,
-				'logoUrl'   => agencia247_get_site_logo_url(),
-				'assetBase' => trailingslashit(get_template_directory_uri() . '/assets/vendor/openlayers'),
+				'enabled'               => $map_enabled ? 1 : 0,
+				'lat'                   => $map_lat,
+				'lon'                   => $map_lon,
+				'zoom'                  => $map_zoom,
+				'radar'                 => (bool) agencia247_get_option('contact_map_radar') ? 1 : 0,
+				'logoUrl'               => agencia247_get_site_logo_url(),
+				'engine'                => 'maplibre',
+				'maplibreCssUrl'        => 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css',
+				'maplibreJsUrl'         => 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js',
+				'maplibreJsFallbackUrl' => 'https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js',
+				'tileAttribution'       => '&copy; OpenStreetMap contributors',
+				'tileUrls'              => array(
+					'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+					'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+					'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+				),
 			),
 			'wa'  => array(
 				'number'      => agencia247_get_whatsapp_number(),
 				'currentUrl'  => agencia247_get_current_whatsapp_url(),
-				'currentText' => agencia247_build_whatsapp_message(agencia247_get_current_request_context_path(), wp_get_document_title()),
+				'currentText' => agencia247_build_whatsapp_message((is_front_page() || is_home()) ? 'inicio' : agencia247_get_current_request_context_path(), (is_front_page() || is_home()) ? '' : wp_get_document_title()),
 			),
 			'ui' => array(
 				'brandIntro'        => agencia247_sanitize_brand_intro_animation((string) agencia247_get_option('brand_intro_animation')),

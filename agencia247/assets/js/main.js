@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	var sections = ['#hero', '#servicios', '#proyectos', '#contacto'];
 	var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	var navDropdownDelay = parseInt(uiConfig.navDropdownDelay, 10);
-	var openLayersLoader = {
+	var mapLibraryLoader = {
 		loading: false,
 		callbacks: []
 	};
@@ -284,61 +284,68 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 
-	function appendOpenLayersCss(assetBase) {
-		var existingCss = document.querySelector('link[data-agencia247-ol="1"], link[href*="/openlayers/ol.css"], link[href*="cdn.jsdelivr.net/npm/ol@"], link[href*="unpkg.com/ol@"]');
+	function appendMapLibraryCss(mapConfig) {
+		var existingCss = document.querySelector('link[data-agencia247-maplibre="1"], link[href*="maplibre-gl.css"]');
 		if (existingCss) {
 			return;
 		}
 
-		var cssHref = assetBase ? assetBase + 'ol.css' : 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css';
+		var cssHref = typeof mapConfig.maplibreCssUrl === 'string' && mapConfig.maplibreCssUrl !== ''
+			? mapConfig.maplibreCssUrl
+			: 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css';
 		var cssLink = document.createElement('link');
 		cssLink.rel = 'stylesheet';
 		cssLink.href = cssHref;
-		cssLink.setAttribute('data-agencia247-ol', '1');
+		cssLink.setAttribute('data-agencia247-maplibre', '1');
 		document.head.appendChild(cssLink);
 	}
 
-	function loadOpenLayersAssets(done) {
+	function loadMapLibrary(done) {
 		if (typeof done !== 'function') {
 			return;
 		}
 
-		if (typeof window.ol !== 'undefined') {
+		if (typeof window.maplibregl !== 'undefined') {
 			done(true);
 			return;
 		}
 
-		openLayersLoader.callbacks.push(done);
-		if (openLayersLoader.loading) {
+		mapLibraryLoader.callbacks.push(done);
+		if (mapLibraryLoader.loading) {
 			return;
 		}
-		openLayersLoader.loading = true;
+		mapLibraryLoader.loading = true;
 
-		var localizedMap = getMapConfig();
-		var assetBase = typeof localizedMap.assetBase === 'string' ? localizedMap.assetBase : '';
-		if (assetBase !== '' && assetBase.charAt(assetBase.length - 1) !== '/') {
-			assetBase += '/';
-		}
-		appendOpenLayersCss(assetBase);
+		var mapConfig = getMapConfig();
+		appendMapLibraryCss(mapConfig);
 
 		var sourceCandidates = [];
-		if (assetBase !== '') {
-			sourceCandidates.push(assetBase + 'ol.js');
+		if (typeof mapConfig.maplibreJsUrl === 'string' && mapConfig.maplibreJsUrl !== '') {
+			sourceCandidates.push(mapConfig.maplibreJsUrl);
 		}
-		sourceCandidates.push('https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js');
-		sourceCandidates.push('https://unpkg.com/ol@10.6.1/dist/ol.js');
+		if (sourceCandidates.length === 0) {
+			sourceCandidates.push('https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js');
+		}
+		if (typeof mapConfig.maplibreJsFallbackUrl === 'string' && mapConfig.maplibreJsFallbackUrl !== '') {
+			sourceCandidates.push(mapConfig.maplibreJsFallbackUrl);
+		} else {
+			sourceCandidates.push('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js');
+		}
+		sourceCandidates = sourceCandidates.filter(function(url, index, list) {
+			return list.indexOf(url) === index;
+		});
 
 		function finish(success) {
-			var queue = openLayersLoader.callbacks.slice();
-			openLayersLoader.callbacks = [];
-			openLayersLoader.loading = false;
+			var queue = mapLibraryLoader.callbacks.slice();
+			mapLibraryLoader.callbacks = [];
+			mapLibraryLoader.loading = false;
 			queue.forEach(function(callback) {
 				callback(success);
 			});
 		}
 
 		function tryNextSource(index) {
-			if (typeof window.ol !== 'undefined') {
+			if (typeof window.maplibregl !== 'undefined') {
 				finish(true);
 				return;
 			}
@@ -358,10 +365,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			var script = document.createElement('script');
 			script.src = source;
 			script.async = true;
-			script.setAttribute('data-agencia247-ol', '1');
+			script.setAttribute('data-agencia247-maplibre', '1');
 			script.addEventListener('load', function() {
-				if (typeof window.ol !== 'undefined') {
-					script.setAttribute('data-agencia247-ol-loaded', '1');
+				if (typeof window.maplibregl !== 'undefined') {
+					script.setAttribute('data-agencia247-maplibre-loaded', '1');
 					finish(true);
 					return;
 				}
@@ -377,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			var checks = 0;
 			var checkTimer = window.setInterval(function() {
 				checks++;
-				if (typeof window.ol !== 'undefined') {
+				if (typeof window.maplibregl !== 'undefined') {
 					window.clearInterval(checkTimer);
 					finish(true);
 					return;
@@ -389,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}, 150);
 		}
 
-		var existingScript = document.querySelector('script[data-agencia247-ol="1"], script[src*="/openlayers/ol.js"], script[src*="cdn.jsdelivr.net/npm/ol@"], script[src*="unpkg.com/ol@"]');
+		var existingScript = document.querySelector('script[data-agencia247-maplibre="1"], script[src*="maplibre-gl.js"]');
 		if (existingScript) {
 			waitForLibrary(0);
 			return;
@@ -398,8 +405,80 @@ document.addEventListener('DOMContentLoaded', function() {
 		tryNextSource(0);
 	}
 
+	function buildMapStyle(mapConfig) {
+		var tileUrls = Array.isArray(mapConfig.tileUrls) && mapConfig.tileUrls.length > 0
+			? mapConfig.tileUrls
+			: [
+				'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+				'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+				'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+			];
+		return {
+			version: 8,
+			sources: {
+				'osm-raster': {
+					type: 'raster',
+					tiles: tileUrls,
+					tileSize: 256,
+					attribution: mapConfig.tileAttribution || '&copy; OpenStreetMap contributors'
+				}
+			},
+			layers: [
+				{
+					id: 'osm-raster-layer',
+					type: 'raster',
+					source: 'osm-raster'
+				}
+			]
+		};
+	}
+
+	function createMapMarker(logoUrl, radarEnabled) {
+		var markerElement = document.createElement('div');
+		markerElement.className = 'contact-map-marker';
+
+		if (radarEnabled) {
+			var radarElement = document.createElement('div');
+			radarElement.className = 'contact-map-marker-radar';
+			radarElement.setAttribute('aria-hidden', 'true');
+			radarElement.innerHTML = [
+				'<span class="map-radar-ring map-radar-ring-1"></span>',
+				'<span class="map-radar-ring map-radar-ring-2"></span>',
+				'<span class="map-radar-ring map-radar-ring-3"></span>',
+				'<span class="map-radar-sweep"></span>'
+			].join('');
+			markerElement.appendChild(radarElement);
+		}
+
+		var badgeElement = document.createElement('div');
+		badgeElement.className = 'contact-map-marker-badge';
+
+		if (logoUrl) {
+			var logoElement = document.createElement('img');
+			logoElement.className = 'contact-map-marker-logo';
+			logoElement.src = logoUrl;
+			logoElement.alt = '';
+			logoElement.loading = 'lazy';
+			logoElement.decoding = 'async';
+			logoElement.addEventListener('error', function() {
+				logoElement.remove();
+				var dotFallback = document.createElement('span');
+				dotFallback.className = 'contact-map-marker-dot';
+				badgeElement.appendChild(dotFallback);
+			}, { once: true });
+			badgeElement.appendChild(logoElement);
+		} else {
+			var markerDot = document.createElement('span');
+			markerDot.className = 'contact-map-marker-dot';
+			badgeElement.appendChild(markerDot);
+		}
+
+		markerElement.appendChild(badgeElement);
+		return markerElement;
+	}
+
 	function renderContactMap(mapElement) {
-		if (!mapElement || mapElement.getAttribute('data-map-ready') === '1' || typeof window.ol === 'undefined') {
+		if (!mapElement || mapElement.getAttribute('data-map-ready') === '1' || mapElement.getAttribute('data-map-initializing') === '1' || typeof window.maplibregl === 'undefined') {
 			return false;
 		}
 
@@ -411,116 +490,74 @@ document.addEventListener('DOMContentLoaded', function() {
 		var lon = Number.isFinite(datasetLon) ? datasetLon : parseFloat(localizedMap.lon || '');
 		var zoom = Number.isFinite(datasetZoom) ? datasetZoom : parseFloat(localizedMap.zoom || '13.4');
 		var logoUrl = mapElement.getAttribute('data-logo-url') || localizedMap.logoUrl || '';
+		var radarEnabled = mapElement.getAttribute('data-radar') === '1' || parseInt(localizedMap.radar, 10) === 1;
 
 		if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
 			setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
 			return false;
 		}
 
-		var center = ol.proj.fromLonLat([lon, lat]);
-		var marker = new ol.Feature({
-			geometry: new ol.geom.Point(center)
-		});
-		var halo = new ol.Feature({
-			geometry: new ol.geom.Point(center)
-		});
-		halo.setStyle(new ol.style.Style({
-			image: new ol.style.Circle({
-				radius: 20,
-				fill: new ol.style.Fill({ color: 'rgba(35,81,245,0.16)' }),
-				stroke: new ol.style.Stroke({ color: 'rgba(35,81,245,0.48)', width: 2 })
-			})
-		}));
+		mapElement.setAttribute('data-map-initializing', '1');
 
-		var markerStyle;
-		if (logoUrl) {
-			markerStyle = [
-				new ol.style.Style({
-					image: new ol.style.Circle({
-						radius: 16,
-						fill: new ol.style.Fill({ color: '#ffffff' }),
-						stroke: new ol.style.Stroke({ color: 'rgba(35,81,245,0.35)', width: 3 })
-					})
-				}),
-				new ol.style.Style({
-					image: new ol.style.Icon({
-						src: logoUrl,
-						scale: 0.19,
-						anchor: [0.5, 0.5],
-						anchorXUnits: 'fraction',
-						anchorYUnits: 'fraction',
-						crossOrigin: 'anonymous'
-					})
-				})
-			];
-		} else {
-			markerStyle = new ol.style.Style({
-				image: new ol.style.Circle({
-					radius: 9,
-					fill: new ol.style.Fill({ color: '#2351f5' }),
-					stroke: new ol.style.Stroke({ color: '#ffffff', width: 3 })
-				})
+		try {
+			var map = new window.maplibregl.Map({
+				container: mapElement,
+				style: buildMapStyle(localizedMap),
+				center: [lon, lat],
+				zoom: Number.isFinite(zoom) ? zoom : 13.4,
+				attributionControl: true
 			});
-		}
-		marker.setStyle(markerStyle);
 
-		var markerLayer = new ol.layer.Vector({
-			source: new ol.source.Vector({
-				features: [halo, marker]
-			})
-		});
-
-		var controlsFactory = null;
-		if (ol.control && ol.control.defaults) {
-			if (typeof ol.control.defaults === 'function') {
-				controlsFactory = ol.control.defaults;
-			} else if (typeof ol.control.defaults.defaults === 'function') {
-				controlsFactory = ol.control.defaults.defaults;
+			if (map.dragRotate && typeof map.dragRotate.disable === 'function') {
+				map.dragRotate.disable();
 			}
-		}
+			if (map.touchZoomRotate && typeof map.touchZoomRotate.disableRotation === 'function') {
+				map.touchZoomRotate.disableRotation();
+			}
+			if (map.touchPitch && typeof map.touchPitch.disable === 'function') {
+				map.touchPitch.disable();
+			}
 
-		var mapOptions = {
-			target: mapElement,
-			layers: [
-				new ol.layer.Tile({
-					source: new ol.source.OSM()
-				}),
-				markerLayer
-			],
-			view: new ol.View({
-				center: center,
-				zoom: Number.isFinite(zoom) ? zoom : 13.4
-			})
-		};
+			new window.maplibregl.Marker({
+				element: createMapMarker(logoUrl, radarEnabled),
+				anchor: 'center'
+			}).setLngLat([lon, lat]).addTo(map);
 
-		if (controlsFactory) {
-			mapOptions.controls = controlsFactory({
-				zoom: false,
-				rotate: false,
-				attribution: true
+			map.on('load', function() {
+				mapElement.setAttribute('data-map-ready', '1');
+				mapElement.removeAttribute('data-map-initializing');
+				setMapStatus(mapElement, 'ready');
+				map.resize();
+				if (!reducedMotion) {
+					map.easeTo({
+						center: [lon, lat],
+						zoom: Math.max((Number.isFinite(zoom) ? zoom : 13.4), 14.8),
+						duration: 900
+					});
+				}
 			});
-		}
 
-		var map = new ol.Map(mapOptions);
-		mapElement.setAttribute('data-map-ready', '1');
-		setMapStatus(mapElement, 'ready');
-
-		if (!reducedMotion) {
-			map.getView().animate({
-				center: center,
-				zoom: Math.max((Number.isFinite(zoom) ? zoom : 13.4), 14.8),
-				duration: 900
+			map.on('error', function() {
+				if (mapElement.getAttribute('data-map-ready') !== '1') {
+					mapElement.removeAttribute('data-map-initializing');
+					setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+				}
 			});
-		}
 
-		if (typeof ResizeObserver !== 'undefined') {
-			var resizeObserver = new ResizeObserver(function() {
-				map.updateSize();
-			});
-			resizeObserver.observe(mapElement);
-		}
+			if (typeof ResizeObserver !== 'undefined') {
+				var resizeObserver = new ResizeObserver(function() {
+					map.resize();
+				});
+				resizeObserver.observe(mapElement);
+			}
 
-		return true;
+			mapElement._agencia247Map = map;
+			return true;
+		} catch (error) {
+			mapElement.removeAttribute('data-map-initializing');
+			setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+			return false;
+		}
 	}
 
 	function initContactMap() {
@@ -537,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		setMapStatus(mapElement, 'loading', getMapText(mapElement, 'data-loading-text', 'Cargando mapa...'));
 
 		function bootMap() {
-			loadOpenLayersAssets(function(loaded) {
+			loadMapLibrary(function(loaded) {
 				if (!loaded) {
 					setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
 					return;

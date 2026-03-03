@@ -1244,10 +1244,6 @@ h1,
 	margin: 1.3rem 0 1.6rem;
 }
 
-.contact-wa-btn {
-	margin-bottom: 1.2rem;
-}
-
 .contact-map-wrap {
 	position: relative;
 }
@@ -1295,53 +1291,90 @@ h1,
 	z-index: 4;
 }
 
-.contact-map .ol-viewport {
+.contact-map .maplibregl-canvas {
 	border-radius: inherit;
 }
 
-.contact-map .ol-attribution {
+.contact-map .maplibregl-ctrl-bottom-left,
+.contact-map .maplibregl-ctrl-bottom-right {
+	z-index: 3;
+}
+
+.contact-map .maplibregl-ctrl-attrib {
 	font-size: .68rem;
 	background: rgba(255,255,255,0.84);
 	border-radius: 7px 0 0 0;
 }
 
-.contact-map .ol-attribution a {
+.contact-map .maplibregl-ctrl-attrib a {
 	color: var(--mid);
 }
 
-.contact-map-radar {
+.contact-map .maplibregl-ctrl-logo {
+	display: none !important;
+}
+
+.contact-map-marker {
+	position: relative;
+	width: 58px;
+	height: 58px;
+	display: grid;
+	place-items: center;
+	pointer-events: none;
+	transform: translateZ(0);
+}
+
+.contact-map-marker-badge {
+	position: relative;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: #fff;
+	border: 3px solid rgba(35,81,245,0.32);
+	box-shadow: 0 10px 20px rgba(13,16,36,0.2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	z-index: 2;
+}
+
+.contact-map-marker-logo {
+	width: 72%;
+	height: 72%;
+	object-fit: contain;
+}
+
+.contact-map-marker-dot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: var(--blue);
+	box-shadow: 0 0 0 3px rgba(35,81,245,0.18);
+}
+
+.contact-map-marker-radar {
 	position: absolute;
 	inset: 0;
 	display: grid;
 	place-items: center;
-	pointer-events: none;
-	z-index: 5;
+	z-index: 1;
 }
 
-.contact-map[data-map-state='ready'] .contact-map-radar {
-	opacity: 1;
-}
-
-.contact-map[data-map-state='loading'] .contact-map-radar,
-.contact-map[data-map-state='error'] .contact-map-radar,
-.contact-map[data-map-state='disabled'] .contact-map-radar {
-	opacity: .55;
-}
-
-.radar-ring {
+.map-radar-ring {
 	position: absolute;
-	width: 120px;
-	height: 120px;
+	width: 52px;
+	height: 52px;
 	border-radius: 50%;
 	border: 1px solid rgba(0,201,167,0.42);
 	animation: radarPulse 2.4s ease-out infinite;
 }
 
-.radar-ring-2 {
+.map-radar-ring-2 {
 	animation-delay: .8s;
 }
 
-.radar-ring-3 {
+.map-radar-ring-3 {
 	animation-delay: 1.6s;
 }
 
@@ -1352,19 +1385,19 @@ h1,
 	}
 	100% {
 		opacity: 0;
-		transform: scale(2.4);
+		transform: scale(2.25);
 	}
 }
 
-.radar-sweep {
+.map-radar-sweep {
 	position: absolute;
-	width: 260px;
-	height: 260px;
+	width: 108px;
+	height: 108px;
 	border-radius: 50%;
 	background: conic-gradient(from 0deg, rgba(0,201,167,0.24), rgba(0,201,167,0) 40%, rgba(0,201,167,0) 100%);
 	filter: blur(1px);
 	animation: radarSweep 4.4s linear infinite;
-	opacity: .85;
+	opacity: .7;
 }
 
 @keyframes radarSweep {

@@ -68,9 +68,6 @@ $social_items = array(
 			<?php if ($contact_text !== '') : ?>
 				<p class="contact-text"><?php echo esc_html($contact_text); ?></p>
 			<?php endif; ?>
-			<?php if ($contact_wa !== '') : ?>
-				<a class="btn-primary btn-primary--wa contact-wa-btn" href="<?php echo esc_url($contact_wa); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Solicitar servicio por WhatsApp', 'agencia247'); ?></a>
-			<?php endif; ?>
 
 			<div class="socials">
 				<?php foreach ($social_items as $social) : ?>
@@ -114,14 +111,6 @@ $social_items = array(
 						<span class="contact-map-spinner" aria-hidden="true"></span>
 						<span class="contact-map-status-text"><?php esc_html_e('Cargando mapa...', 'agencia247'); ?></span>
 					</div>
-					<?php if ($map_radar) : ?>
-						<div class="contact-map-radar" aria-hidden="true">
-							<span class="radar-ring radar-ring-1"></span>
-							<span class="radar-ring radar-ring-2"></span>
-							<span class="radar-ring radar-ring-3"></span>
-							<span class="radar-sweep"></span>
-						</div>
-					<?php endif; ?>
 				</div>
 				<p class="contact-map-note"><?php echo esc_html($map_note); ?></p>
 			</div>
