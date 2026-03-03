@@ -245,13 +245,38 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 
-		var existingScript = document.querySelector('script[data-agencia247-ol="1"], script[src*="cdn.jsdelivr.net/npm/ol@"], script[src*="/ol.js"]');
+		var existingScript = document.querySelector('script[data-agencia247-ol="1"], script[src*="cdn.jsdelivr.net/npm/ol@"], script[src*="unpkg.com/ol@"], script[src*="/ol.js"]');
 		if (existingScript) {
-			existingScript.addEventListener('load', done, { once: true });
+			if (existingScript.getAttribute('data-agencia247-ol-loaded') === '1') {
+				done();
+				return;
+			}
+
+			var settled = false;
+			var waitForOl = window.setInterval(function() {
+				if (typeof window.ol !== 'undefined') {
+					window.clearInterval(waitForOl);
+					settled = true;
+					done();
+				}
+			}, 120);
+
+			existingScript.addEventListener('load', function() {
+				existingScript.setAttribute('data-agencia247-ol-loaded', '1');
+				if (!settled) {
+					window.clearInterval(waitForOl);
+					done();
+				}
+			}, { once: true });
+
+			existingScript.addEventListener('error', function() {
+				window.clearInterval(waitForOl);
+				injectOpenLayersScript(done, true);
+			}, { once: true });
 			return;
 		}
 
-		if (!document.querySelector('link[data-agencia247-ol="1"], link[href*="cdn.jsdelivr.net/npm/ol@"]')) {
+		if (!document.querySelector('link[data-agencia247-ol="1"], link[href*="cdn.jsdelivr.net/npm/ol@"], link[href*="unpkg.com/ol@"]')) {
 			var link = document.createElement('link');
 			link.rel = 'stylesheet';
 			link.href = 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css';
@@ -259,11 +284,25 @@ document.addEventListener('DOMContentLoaded', function() {
 			document.head.appendChild(link);
 		}
 
+		injectOpenLayersScript(done, false);
+	}
+
+	function injectOpenLayersScript(done, useFallbackCdn) {
 		var script = document.createElement('script');
-		script.src = 'https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js';
+		script.src = useFallbackCdn
+			? 'https://unpkg.com/ol@10.6.1/dist/ol.js'
+			: 'https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js';
 		script.async = true;
 		script.setAttribute('data-agencia247-ol', '1');
-		script.addEventListener('load', done, { once: true });
+		script.addEventListener('load', function() {
+			script.setAttribute('data-agencia247-ol-loaded', '1');
+			done();
+		}, { once: true });
+		script.addEventListener('error', function() {
+			if (!useFallbackCdn) {
+				injectOpenLayersScript(done, true);
+			}
+		}, { once: true });
 		document.body.appendChild(script);
 	}
 
@@ -359,9 +398,38 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 
-		loadOpenLayersAssets(function() {
-			renderContactMap();
+		function bootMap() {
+			loadOpenLayersAssets(function() {
+				renderContactMap();
+			});
+		}
+
+		bootMap();
+		window.setTimeout(bootMap, 900);
+		window.setTimeout(bootMap, 2200);
+	}
+
+	function initFloatingWhatsApp() {
+		var waButton = document.querySelector('.wa-floating-btn');
+		var footer = document.querySelector('footer');
+		if (!waButton || !footer || !('IntersectionObserver' in window)) {
+			return;
+		}
+
+		var observer = new IntersectionObserver(function(entries) {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					waButton.classList.add('wa-floating-btn--lifted');
+				} else {
+					waButton.classList.remove('wa-floating-btn--lifted');
+				}
+			});
+		}, {
+			rootMargin: '0px 0px -12% 0px',
+			threshold: 0.01
 		});
+
+		observer.observe(footer);
 	}
 
 	function handleScroll() {
@@ -375,6 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	initDynamicText();
 	initRevealAnimations();
 	initContactMap();
+	initFloatingWhatsApp();
 	handleScroll();
 	window.addEventListener('scroll', handleScroll, { passive: true });
 });

@@ -134,6 +134,8 @@ nav ul a.active {
 }
 
 .nav-cta {
+	position: relative;
+	overflow: hidden;
 	padding: .55rem 1.5rem;
 	background: var(--blue);
 	color: #fff;
@@ -146,9 +148,25 @@ nav ul a.active {
 	transition: opacity .2s, transform .2s;
 }
 
+.nav-cta::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -120%;
+	width: 46%;
+	background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent);
+	transform: skewX(-18deg);
+	transition: left .45s ease;
+}
+
 .nav-cta:hover {
 	opacity: .85;
 	transform: translateY(-1px);
+}
+
+.nav-cta:hover::before {
+	left: 135%;
 }
 
 #hero {
@@ -1241,6 +1259,12 @@ h1,
 	border-radius: 18px;
 	padding: 1rem;
 	box-shadow: var(--shadow);
+	transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.contact-map-card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 16px 36px rgba(35,81,245,0.14);
 }
 
 .contact-map-label {
@@ -1332,8 +1356,8 @@ h1,
 
 .wa-floating-btn {
 	position: fixed;
-	right: 1rem;
-	bottom: 1rem;
+	right: 1.2rem;
+	bottom: 2.3rem;
 	z-index: 9999;
 	display: inline-flex;
 	align-items: center;
@@ -1350,6 +1374,10 @@ h1,
 .wa-floating-btn:hover {
 	transform: translateY(-3px);
 	box-shadow: 0 24px 40px rgba(18,140,126,0.45);
+}
+
+.wa-floating-btn--lifted {
+	bottom: 7rem;
 }
 
 .wa-floating-btn:focus-visible {
@@ -1412,5 +1440,11 @@ h1,
 
 	.wa-floating-btn {
 		padding: .65rem;
+		bottom: 1.7rem;
+		right: .8rem;
+	}
+
+	.wa-floating-btn--lifted {
+		bottom: 5.4rem;
 	}
 }

@@ -157,13 +157,8 @@ if (!function_exists('agencia247_build_whatsapp_message')) {
 
 		$parts = array($base_message);
 		$title = trim((string) $title);
-		$context = trim((string) $context);
-
 		if ($title !== '') {
 			$parts[] = 'Me interesa: ' . $title . '.';
-		}
-		if ($context !== '') {
-			$parts[] = 'Pagina de referencia: /' . trim($context, '/') . '/.';
 		}
 		$parts[] = 'Quisiera una cotizacion y detalles, por favor.';
 

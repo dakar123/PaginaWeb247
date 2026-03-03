@@ -417,11 +417,6 @@ function agencia247_build_whatsapp_message($context = '', $title = '') {
 		$parts[] = 'Me interesa: ' . $title . '.';
 	}
 
-	$context = trim((string) $context);
-	if ($context !== '') {
-		$parts[] = 'Pagina de referencia: /' . trim($context, '/') . '/.';
-	}
-
 	$parts[] = 'Quisiera una cotizacion y detalles, por favor.';
 
 	return implode(' ', $parts);
