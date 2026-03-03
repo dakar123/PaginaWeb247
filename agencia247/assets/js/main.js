@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	var sections = ['#hero', '#servicios', '#proyectos', '#contacto'];
 	var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	var navDropdownDelay = parseInt(uiConfig.navDropdownDelay, 10);
+	var openLayersLoader = {
+		loading: false,
+		callbacks: []
+	};
 
 	if (!Number.isFinite(navDropdownDelay) || navDropdownDelay < 80) {
 		navDropdownDelay = 260;
@@ -239,123 +243,230 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 
-	function loadOpenLayersAssets(done) {
-		if (typeof window.ol !== 'undefined') {
-			done();
+	function getMapConfig() {
+		return themeConfig.map || {};
+	}
+
+	function getMapText(mapElement, key, fallback) {
+		var value = mapElement.getAttribute(key);
+		return value && value.trim() !== '' ? value : fallback;
+	}
+
+	function isMapEnabled(mapElement) {
+		var localizedMap = getMapConfig();
+		var rawValue = mapElement.getAttribute('data-enabled');
+		if (!rawValue && typeof localizedMap.enabled !== 'undefined') {
+			rawValue = String(localizedMap.enabled);
+		}
+		if (rawValue === '' || rawValue === null) {
+			return true;
+		}
+		return parseInt(rawValue, 10) === 1;
+	}
+
+	function setMapStatus(mapElement, state, text) {
+		var statusElement = mapElement.querySelector('[data-map-status]');
+		var statusText = mapElement.querySelector('.contact-map-status-text');
+
+		mapElement.setAttribute('data-map-state', state);
+		if (statusText && typeof text === 'string' && text !== '') {
+			statusText.textContent = text;
+		}
+
+		if (!statusElement) {
 			return;
 		}
 
-		var existingScript = document.querySelector('script[data-agencia247-ol="1"], script[src*="cdn.jsdelivr.net/npm/ol@"], script[src*="unpkg.com/ol@"], script[src*="/ol.js"]');
-		if (existingScript) {
-			if (existingScript.getAttribute('data-agencia247-ol-loaded') === '1') {
-				done();
+		if (state === 'ready') {
+			statusElement.setAttribute('hidden', 'hidden');
+		} else {
+			statusElement.removeAttribute('hidden');
+		}
+	}
+
+	function appendOpenLayersCss(assetBase) {
+		var existingCss = document.querySelector('link[data-agencia247-ol="1"], link[href*="/openlayers/ol.css"], link[href*="cdn.jsdelivr.net/npm/ol@"], link[href*="unpkg.com/ol@"]');
+		if (existingCss) {
+			return;
+		}
+
+		var cssHref = assetBase ? assetBase + 'ol.css' : 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css';
+		var cssLink = document.createElement('link');
+		cssLink.rel = 'stylesheet';
+		cssLink.href = cssHref;
+		cssLink.setAttribute('data-agencia247-ol', '1');
+		document.head.appendChild(cssLink);
+	}
+
+	function loadOpenLayersAssets(done) {
+		if (typeof done !== 'function') {
+			return;
+		}
+
+		if (typeof window.ol !== 'undefined') {
+			done(true);
+			return;
+		}
+
+		openLayersLoader.callbacks.push(done);
+		if (openLayersLoader.loading) {
+			return;
+		}
+		openLayersLoader.loading = true;
+
+		var localizedMap = getMapConfig();
+		var assetBase = typeof localizedMap.assetBase === 'string' ? localizedMap.assetBase : '';
+		if (assetBase !== '' && assetBase.charAt(assetBase.length - 1) !== '/') {
+			assetBase += '/';
+		}
+		appendOpenLayersCss(assetBase);
+
+		var sourceCandidates = [];
+		if (assetBase !== '') {
+			sourceCandidates.push(assetBase + 'ol.js');
+		}
+		sourceCandidates.push('https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js');
+		sourceCandidates.push('https://unpkg.com/ol@10.6.1/dist/ol.js');
+
+		function finish(success) {
+			var queue = openLayersLoader.callbacks.slice();
+			openLayersLoader.callbacks = [];
+			openLayersLoader.loading = false;
+			queue.forEach(function(callback) {
+				callback(success);
+			});
+		}
+
+		function tryNextSource(index) {
+			if (typeof window.ol !== 'undefined') {
+				finish(true);
 				return;
 			}
 
-			var settled = false;
-			var waitForOl = window.setInterval(function() {
-				if (typeof window.ol !== 'undefined') {
-					window.clearInterval(waitForOl);
-					settled = true;
-					done();
-				}
-			}, 120);
-
-			existingScript.addEventListener('load', function() {
-				existingScript.setAttribute('data-agencia247-ol-loaded', '1');
-				if (!settled) {
-					window.clearInterval(waitForOl);
-					done();
-				}
-			}, { once: true });
-
-			existingScript.addEventListener('error', function() {
-				window.clearInterval(waitForOl);
-				injectOpenLayersScript(done, true);
-			}, { once: true });
-			return;
-		}
-
-		if (!document.querySelector('link[data-agencia247-ol="1"], link[href*="cdn.jsdelivr.net/npm/ol@"], link[href*="unpkg.com/ol@"]')) {
-			var link = document.createElement('link');
-			link.rel = 'stylesheet';
-			link.href = 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css';
-			link.setAttribute('data-agencia247-ol', '1');
-			document.head.appendChild(link);
-		}
-
-		injectOpenLayersScript(done, false);
-	}
-
-	function injectOpenLayersScript(done, useFallbackCdn) {
-		var script = document.createElement('script');
-		script.src = useFallbackCdn
-			? 'https://unpkg.com/ol@10.6.1/dist/ol.js'
-			: 'https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js';
-		script.async = true;
-		script.setAttribute('data-agencia247-ol', '1');
-		script.addEventListener('load', function() {
-			script.setAttribute('data-agencia247-ol-loaded', '1');
-			done();
-		}, { once: true });
-		script.addEventListener('error', function() {
-			if (!useFallbackCdn) {
-				injectOpenLayersScript(done, true);
+			if (index >= sourceCandidates.length) {
+				finish(false);
+				return;
 			}
-		}, { once: true });
-		document.body.appendChild(script);
+
+			var source = sourceCandidates[index];
+			var existingSourceScript = document.querySelector('script[src="' + source + '"]');
+			if (existingSourceScript) {
+				waitForLibrary(index + 1);
+				return;
+			}
+
+			var script = document.createElement('script');
+			script.src = source;
+			script.async = true;
+			script.setAttribute('data-agencia247-ol', '1');
+			script.addEventListener('load', function() {
+				if (typeof window.ol !== 'undefined') {
+					script.setAttribute('data-agencia247-ol-loaded', '1');
+					finish(true);
+					return;
+				}
+				tryNextSource(index + 1);
+			}, { once: true });
+			script.addEventListener('error', function() {
+				tryNextSource(index + 1);
+			}, { once: true });
+			document.body.appendChild(script);
+		}
+
+		function waitForLibrary(nextIndex) {
+			var checks = 0;
+			var checkTimer = window.setInterval(function() {
+				checks++;
+				if (typeof window.ol !== 'undefined') {
+					window.clearInterval(checkTimer);
+					finish(true);
+					return;
+				}
+				if (checks >= 20) {
+					window.clearInterval(checkTimer);
+					tryNextSource(nextIndex);
+				}
+			}, 150);
+		}
+
+		var existingScript = document.querySelector('script[data-agencia247-ol="1"], script[src*="/openlayers/ol.js"], script[src*="cdn.jsdelivr.net/npm/ol@"], script[src*="unpkg.com/ol@"]');
+		if (existingScript) {
+			waitForLibrary(0);
+			return;
+		}
+
+		tryNextSource(0);
 	}
 
-	function renderContactMap() {
-		var mapElement = document.getElementById('agencia247-contact-map');
+	function renderContactMap(mapElement) {
 		if (!mapElement || mapElement.getAttribute('data-map-ready') === '1' || typeof window.ol === 'undefined') {
-			return;
+			return false;
 		}
 
 		var datasetLat = parseFloat(mapElement.getAttribute('data-lat') || '');
 		var datasetLon = parseFloat(mapElement.getAttribute('data-lon') || '');
 		var datasetZoom = parseFloat(mapElement.getAttribute('data-zoom') || '');
-		var localizedMap = themeConfig.map || {};
+		var localizedMap = getMapConfig();
 		var lat = Number.isFinite(datasetLat) ? datasetLat : parseFloat(localizedMap.lat || '');
 		var lon = Number.isFinite(datasetLon) ? datasetLon : parseFloat(localizedMap.lon || '');
 		var zoom = Number.isFinite(datasetZoom) ? datasetZoom : parseFloat(localizedMap.zoom || '13.4');
 		var logoUrl = mapElement.getAttribute('data-logo-url') || localizedMap.logoUrl || '';
 
 		if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-			return;
+			setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+			return false;
 		}
 
 		var center = ol.proj.fromLonLat([lon, lat]);
 		var marker = new ol.Feature({
 			geometry: new ol.geom.Point(center)
 		});
+		var halo = new ol.Feature({
+			geometry: new ol.geom.Point(center)
+		});
+		halo.setStyle(new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 20,
+				fill: new ol.style.Fill({ color: 'rgba(35,81,245,0.16)' }),
+				stroke: new ol.style.Stroke({ color: 'rgba(35,81,245,0.48)', width: 2 })
+			})
+		}));
 
 		var markerStyle;
 		if (logoUrl) {
-			markerStyle = new ol.style.Style({
-				image: new ol.style.Icon({
-					src: logoUrl,
-					scale: 0.2,
-					anchor: [0.5, 0.5],
-					anchorXUnits: 'fraction',
-					anchorYUnits: 'fraction'
+			markerStyle = [
+				new ol.style.Style({
+					image: new ol.style.Circle({
+						radius: 16,
+						fill: new ol.style.Fill({ color: '#ffffff' }),
+						stroke: new ol.style.Stroke({ color: 'rgba(35,81,245,0.35)', width: 3 })
+					})
+				}),
+				new ol.style.Style({
+					image: new ol.style.Icon({
+						src: logoUrl,
+						scale: 0.19,
+						anchor: [0.5, 0.5],
+						anchorXUnits: 'fraction',
+						anchorYUnits: 'fraction',
+						crossOrigin: 'anonymous'
+					})
 				})
-			});
+			];
 		} else {
 			markerStyle = new ol.style.Style({
 				image: new ol.style.Circle({
-					radius: 8,
+					radius: 9,
 					fill: new ol.style.Fill({ color: '#2351f5' }),
 					stroke: new ol.style.Stroke({ color: '#ffffff', width: 3 })
 				})
 			});
 		}
-
 		marker.setStyle(markerStyle);
 
 		var markerLayer = new ol.layer.Vector({
 			source: new ol.source.Vector({
-				features: [marker]
+				features: [halo, marker]
 			})
 		});
 
@@ -391,9 +502,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 
 		var map = new ol.Map(mapOptions);
+		mapElement.setAttribute('data-map-ready', '1');
+		setMapStatus(mapElement, 'ready');
 
 		if (!reducedMotion) {
-			map.getView().animate({ center: center, zoom: Math.max((Number.isFinite(zoom) ? zoom : 13.4), 14.8), duration: 900 });
+			map.getView().animate({
+				center: center,
+				zoom: Math.max((Number.isFinite(zoom) ? zoom : 13.4), 14.8),
+				duration: 900
+			});
 		}
 
 		if (typeof ResizeObserver !== 'undefined') {
@@ -403,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			resizeObserver.observe(mapElement);
 		}
 
-		mapElement.setAttribute('data-map-ready', '1');
+		return true;
 	}
 
 	function initContactMap() {
@@ -412,15 +529,54 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 
+		if (!isMapEnabled(mapElement)) {
+			setMapStatus(mapElement, 'disabled', getMapText(mapElement, 'data-disabled-text', 'Mapa desactivado desde el personalizador.'));
+			return;
+		}
+
+		setMapStatus(mapElement, 'loading', getMapText(mapElement, 'data-loading-text', 'Cargando mapa...'));
+
 		function bootMap() {
-			loadOpenLayersAssets(function() {
-				renderContactMap();
+			loadOpenLayersAssets(function(loaded) {
+				if (!loaded) {
+					setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+					return;
+				}
+				if (!renderContactMap(mapElement) && mapElement.getAttribute('data-map-ready') !== '1') {
+					setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+				}
 			});
 		}
 
-		bootMap();
-		window.setTimeout(bootMap, 900);
-		window.setTimeout(bootMap, 2200);
+		var started = false;
+		function startWhenReady() {
+			if (started) {
+				return;
+			}
+			started = true;
+			bootMap();
+			window.setTimeout(bootMap, 1100);
+		}
+
+		if ('IntersectionObserver' in window) {
+			var mapObserver = new IntersectionObserver(function(entries, observer) {
+				entries.forEach(function(entry) {
+					if (!entry.isIntersecting) {
+						return;
+					}
+					observer.unobserve(entry.target);
+					startWhenReady();
+				});
+			}, {
+				rootMargin: '0px 0px 180px 0px',
+				threshold: 0.01
+			});
+			mapObserver.observe(mapElement);
+			window.setTimeout(startWhenReady, 2400);
+			return;
+		}
+
+		startWhenReady();
 	}
 
 	function initFloatingWhatsApp() {

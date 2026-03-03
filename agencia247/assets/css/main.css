@@ -1281,8 +1281,22 @@ h1,
 	height: 355px;
 	border-radius: 14px;
 	overflow: hidden;
-	background: #d7e8ff;
+	background: radial-gradient(circle at 40% 30%, #e7f0ff 0%, #d7e8ff 55%, #cfdfff 100%);
 	border: 1px solid var(--blue-mid);
+}
+
+.contact-map::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border: 1px solid rgba(255,255,255,0.38);
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: 4;
+}
+
+.contact-map .ol-viewport {
+	border-radius: inherit;
 }
 
 .contact-map .ol-attribution {
@@ -1302,6 +1316,16 @@ h1,
 	place-items: center;
 	pointer-events: none;
 	z-index: 5;
+}
+
+.contact-map[data-map-state='ready'] .contact-map-radar {
+	opacity: 1;
+}
+
+.contact-map[data-map-state='loading'] .contact-map-radar,
+.contact-map[data-map-state='error'] .contact-map-radar,
+.contact-map[data-map-state='disabled'] .contact-map-radar {
+	opacity: .55;
 }
 
 .radar-ring {
@@ -1346,6 +1370,57 @@ h1,
 @keyframes radarSweep {
 	from { transform: rotate(0deg); }
 	to { transform: rotate(360deg); }
+}
+
+.contact-map-status {
+	position: absolute;
+	left: .75rem;
+	right: .75rem;
+	bottom: .75rem;
+	display: inline-flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .52rem .72rem;
+	border-radius: 999px;
+	background: rgba(13,16,36,0.66);
+	color: #fff;
+	font-size: .7rem;
+	font-weight: 600;
+	letter-spacing: .02em;
+	backdrop-filter: blur(7px);
+	pointer-events: none;
+	z-index: 7;
+}
+
+.contact-map-status[hidden] {
+	display: none;
+}
+
+.contact-map-spinner {
+	width: 13px;
+	height: 13px;
+	border-radius: 50%;
+	border: 2px solid rgba(255,255,255,0.26);
+	border-top-color: #fff;
+	flex-shrink: 0;
+	animation: mapSpinner .8s linear infinite;
+}
+
+@keyframes mapSpinner {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+.contact-map[data-map-state='error'],
+.contact-map[data-map-state='disabled'] {
+	background: linear-gradient(140deg, #d9e8ff 0%, #edf3ff 100%);
+}
+
+.contact-map[data-map-state='error'] .contact-map-spinner,
+.contact-map[data-map-state='disabled'] .contact-map-spinner {
+	border-color: rgba(255,255,255,0.18);
+	border-top-color: rgba(255,255,255,0.45);
+	animation: none;
 }
 
 .contact-map-note {

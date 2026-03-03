@@ -12,6 +12,8 @@ $map_logo_url  = agencia247_get_site_logo_url();
 $map_lat       = function_exists('agencia247_sanitize_latitude') ? agencia247_sanitize_latitude(agencia247_get_option('contact_map_lat')) : '-15.840691174561973';
 $map_lon       = function_exists('agencia247_sanitize_longitude') ? agencia247_sanitize_longitude(agencia247_get_option('contact_map_lon')) : '-70.02602661165675';
 $map_zoom      = function_exists('agencia247_sanitize_map_zoom') ? agencia247_sanitize_map_zoom(agencia247_get_option('contact_map_zoom')) : '13.4';
+$map_enabled_raw = agencia247_get_option('contact_map_enabled');
+$map_enabled   = ($map_enabled_raw === '' || $map_enabled_raw === null) ? true : (bool) $map_enabled_raw;
 $map_title     = trim((string) agencia247_get_option('contact_map_title'));
 $map_note      = trim((string) agencia247_get_option('contact_map_note'));
 $map_radar     = (bool) agencia247_get_option('contact_map_radar');
@@ -100,9 +102,18 @@ $social_items = array(
 					data-lat="<?php echo esc_attr($map_lat); ?>"
 					data-lon="<?php echo esc_attr($map_lon); ?>"
 					data-zoom="<?php echo esc_attr($map_zoom); ?>"
+					data-enabled="<?php echo $map_enabled ? '1' : '0'; ?>"
 					data-radar="<?php echo $map_radar ? '1' : '0'; ?>"
 					data-logo-url="<?php echo esc_url($map_logo_url); ?>"
+					data-loading-text="<?php echo esc_attr__('Cargando mapa...', 'agencia247'); ?>"
+					data-error-text="<?php echo esc_attr__('No se pudo cargar el mapa en este momento.', 'agencia247'); ?>"
+					data-disabled-text="<?php echo esc_attr__('Mapa desactivado desde el personalizador.', 'agencia247'); ?>"
+					data-map-state="loading"
 				>
+					<div class="contact-map-status" data-map-status>
+						<span class="contact-map-spinner" aria-hidden="true"></span>
+						<span class="contact-map-status-text"><?php esc_html_e('Cargando mapa...', 'agencia247'); ?></span>
+					</div>
 					<?php if ($map_radar) : ?>
 						<div class="contact-map-radar" aria-hidden="true">
 							<span class="radar-ring radar-ring-1"></span>
@@ -116,133 +127,4 @@ $social_items = array(
 			</div>
 		</aside>
 	</div>
-	<script>
-	(function() {
-		var mapElement = document.getElementById('agencia247-contact-map');
-		if (!mapElement || mapElement.getAttribute('data-inline-map-init') === '1') {
-			return;
-		}
-
-		function renderMap() {
-			if (typeof window.ol === 'undefined' || mapElement.getAttribute('data-map-ready') === '1') {
-				return;
-			}
-
-			var lat = parseFloat(mapElement.getAttribute('data-lat') || '');
-			var lon = parseFloat(mapElement.getAttribute('data-lon') || '');
-			var zoom = parseFloat(mapElement.getAttribute('data-zoom') || '13.4');
-			var logo = mapElement.getAttribute('data-logo-url') || '';
-			if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-				return;
-			}
-
-			var center = ol.proj.fromLonLat([lon, lat]);
-			var marker = new ol.Feature({ geometry: new ol.geom.Point(center) });
-			var style;
-
-			if (logo) {
-				style = new ol.style.Style({
-					image: new ol.style.Icon({
-						src: logo,
-						scale: 0.2,
-						anchor: [0.5, 0.5],
-						anchorXUnits: 'fraction',
-						anchorYUnits: 'fraction'
-					})
-				});
-			} else {
-				style = new ol.style.Style({
-					image: new ol.style.Circle({
-						radius: 8,
-						fill: new ol.style.Fill({ color: '#2351f5' }),
-						stroke: new ol.style.Stroke({ color: '#ffffff', width: 3 })
-					})
-				});
-			}
-
-			marker.setStyle(style);
-
-			var markerLayer = new ol.layer.Vector({
-				source: new ol.source.Vector({ features: [marker] })
-			});
-
-			var controlsFactory = null;
-			if (ol.control && ol.control.defaults) {
-				if (typeof ol.control.defaults === 'function') {
-					controlsFactory = ol.control.defaults;
-				} else if (typeof ol.control.defaults.defaults === 'function') {
-					controlsFactory = ol.control.defaults.defaults;
-				}
-			}
-
-			var mapOptions = {
-				target: mapElement,
-				layers: [
-					new ol.layer.Tile({ source: new ol.source.OSM() }),
-					markerLayer
-				],
-				view: new ol.View({
-					center: center,
-					zoom: Number.isFinite(zoom) ? zoom : 13.4
-				})
-			};
-
-			if (controlsFactory) {
-				mapOptions.controls = controlsFactory({
-					zoom: false,
-					rotate: false,
-					attribution: true
-				});
-			}
-
-			new ol.Map(mapOptions);
-
-			mapElement.setAttribute('data-map-ready', '1');
-		}
-
-		function loadMapScript(useFallback) {
-			var src = useFallback
-				? 'https://unpkg.com/ol@10.6.1/dist/ol.js'
-				: 'https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js';
-			var script = document.createElement('script');
-			script.src = src;
-			script.async = true;
-			script.onload = renderMap;
-			script.onerror = function() {
-				if (!useFallback) {
-					loadMapScript(true);
-				}
-			};
-			document.body.appendChild(script);
-		}
-
-		function ensureMapAssets() {
-			if (typeof window.ol !== 'undefined') {
-				renderMap();
-				return;
-			}
-
-			if (!document.querySelector('link[href*=\"/ol@\"], link[data-inline-ol=\"1\"]')) {
-				var link = document.createElement('link');
-				link.rel = 'stylesheet';
-				link.href = 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css';
-				link.setAttribute('data-inline-ol', '1');
-				document.head.appendChild(link);
-			}
-
-			var existingScript = document.querySelector('script[src*=\"/ol@\"], script[src*=\"/ol.js\"], script[data-inline-ol=\"1\"]');
-			if (existingScript) {
-				existingScript.addEventListener('load', renderMap, { once: true });
-				setTimeout(renderMap, 900);
-				return;
-			}
-
-			loadMapScript(false);
-		}
-
-		mapElement.setAttribute('data-inline-map-init', '1');
-		ensureMapAssets();
-		setTimeout(ensureMapAssets, 1600);
-	})();
-	</script>
 </section>
