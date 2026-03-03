@@ -116,4 +116,133 @@ $social_items = array(
 			</div>
 		</aside>
 	</div>
+	<script>
+	(function() {
+		var mapElement = document.getElementById('agencia247-contact-map');
+		if (!mapElement || mapElement.getAttribute('data-inline-map-init') === '1') {
+			return;
+		}
+
+		function renderMap() {
+			if (typeof window.ol === 'undefined' || mapElement.getAttribute('data-map-ready') === '1') {
+				return;
+			}
+
+			var lat = parseFloat(mapElement.getAttribute('data-lat') || '');
+			var lon = parseFloat(mapElement.getAttribute('data-lon') || '');
+			var zoom = parseFloat(mapElement.getAttribute('data-zoom') || '13.4');
+			var logo = mapElement.getAttribute('data-logo-url') || '';
+			if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+				return;
+			}
+
+			var center = ol.proj.fromLonLat([lon, lat]);
+			var marker = new ol.Feature({ geometry: new ol.geom.Point(center) });
+			var style;
+
+			if (logo) {
+				style = new ol.style.Style({
+					image: new ol.style.Icon({
+						src: logo,
+						scale: 0.2,
+						anchor: [0.5, 0.5],
+						anchorXUnits: 'fraction',
+						anchorYUnits: 'fraction'
+					})
+				});
+			} else {
+				style = new ol.style.Style({
+					image: new ol.style.Circle({
+						radius: 8,
+						fill: new ol.style.Fill({ color: '#2351f5' }),
+						stroke: new ol.style.Stroke({ color: '#ffffff', width: 3 })
+					})
+				});
+			}
+
+			marker.setStyle(style);
+
+			var markerLayer = new ol.layer.Vector({
+				source: new ol.source.Vector({ features: [marker] })
+			});
+
+			var controlsFactory = null;
+			if (ol.control && ol.control.defaults) {
+				if (typeof ol.control.defaults === 'function') {
+					controlsFactory = ol.control.defaults;
+				} else if (typeof ol.control.defaults.defaults === 'function') {
+					controlsFactory = ol.control.defaults.defaults;
+				}
+			}
+
+			var mapOptions = {
+				target: mapElement,
+				layers: [
+					new ol.layer.Tile({ source: new ol.source.OSM() }),
+					markerLayer
+				],
+				view: new ol.View({
+					center: center,
+					zoom: Number.isFinite(zoom) ? zoom : 13.4
+				})
+			};
+
+			if (controlsFactory) {
+				mapOptions.controls = controlsFactory({
+					zoom: false,
+					rotate: false,
+					attribution: true
+				});
+			}
+
+			new ol.Map(mapOptions);
+
+			mapElement.setAttribute('data-map-ready', '1');
+		}
+
+		function loadMapScript(useFallback) {
+			var src = useFallback
+				? 'https://unpkg.com/ol@10.6.1/dist/ol.js'
+				: 'https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js';
+			var script = document.createElement('script');
+			script.src = src;
+			script.async = true;
+			script.onload = renderMap;
+			script.onerror = function() {
+				if (!useFallback) {
+					loadMapScript(true);
+				}
+			};
+			document.body.appendChild(script);
+		}
+
+		function ensureMapAssets() {
+			if (typeof window.ol !== 'undefined') {
+				renderMap();
+				return;
+			}
+
+			if (!document.querySelector('link[href*=\"/ol@\"], link[data-inline-ol=\"1\"]')) {
+				var link = document.createElement('link');
+				link.rel = 'stylesheet';
+				link.href = 'https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css';
+				link.setAttribute('data-inline-ol', '1');
+				document.head.appendChild(link);
+			}
+
+			var existingScript = document.querySelector('script[src*=\"/ol@\"], script[src*=\"/ol.js\"], script[data-inline-ol=\"1\"]');
+			if (existingScript) {
+				existingScript.addEventListener('load', renderMap, { once: true });
+				setTimeout(renderMap, 900);
+				return;
+			}
+
+			loadMapScript(false);
+		}
+
+		mapElement.setAttribute('data-inline-map-init', '1');
+		ensureMapAssets();
+		setTimeout(ensureMapAssets, 1600);
+	})();
+	</script>
 </section>

@@ -1228,13 +1228,13 @@ h1,
 .contact-layout {
 	margin-top: 2rem;
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) minmax(320px, 450px);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	gap: 2rem;
 	align-items: stretch;
 }
 
 .contact-copy {
-	max-width: 620px;
+	max-width: 100%;
 }
 
 .contact-text {

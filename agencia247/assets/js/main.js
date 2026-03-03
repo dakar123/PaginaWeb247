@@ -359,7 +359,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			})
 		});
 
-		var map = new ol.Map({
+		var controlsFactory = null;
+		if (ol.control && ol.control.defaults) {
+			if (typeof ol.control.defaults === 'function') {
+				controlsFactory = ol.control.defaults;
+			} else if (typeof ol.control.defaults.defaults === 'function') {
+				controlsFactory = ol.control.defaults.defaults;
+			}
+		}
+
+		var mapOptions = {
 			target: mapElement,
 			layers: [
 				new ol.layer.Tile({
@@ -370,13 +379,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			view: new ol.View({
 				center: center,
 				zoom: Number.isFinite(zoom) ? zoom : 13.4
-			}),
-			controls: ol.control.defaults({
+			})
+		};
+
+		if (controlsFactory) {
+			mapOptions.controls = controlsFactory({
 				zoom: false,
 				rotate: false,
 				attribution: true
-			})
-		});
+			});
+		}
+
+		var map = new ol.Map(mapOptions);
 
 		if (!reducedMotion) {
 			map.getView().animate({ center: center, zoom: Math.max((Number.isFinite(zoom) ? zoom : 13.4), 14.8), duration: 900 });
