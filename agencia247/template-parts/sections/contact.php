@@ -17,6 +17,26 @@ $map_enabled   = ($map_enabled_raw === '' || $map_enabled_raw === null) ? true :
 $map_title     = trim((string) agencia247_get_option('contact_map_title'));
 $map_note      = trim((string) agencia247_get_option('contact_map_note'));
 $map_radar     = (bool) agencia247_get_option('contact_map_radar');
+$map_lat_float = (float) $map_lat;
+$map_lon_float = (float) $map_lon;
+$map_bbox_pad  = 0.03;
+$map_bbox      = implode(
+	',',
+	array(
+		(string) ($map_lon_float - $map_bbox_pad),
+		(string) ($map_lat_float - $map_bbox_pad),
+		(string) ($map_lon_float + $map_bbox_pad),
+		(string) ($map_lat_float + $map_bbox_pad),
+	)
+);
+$map_fallback_url = add_query_arg(
+	array(
+		'bbox'   => $map_bbox,
+		'layer'  => 'mapnik',
+		'marker' => $map_lat_float . ',' . $map_lon_float,
+	),
+	'https://www.openstreetmap.org/export/embed.html'
+);
 
 if ($map_title === '') {
 	$map_title = __('Ubicacion de referencia', 'agencia247');
@@ -105,8 +125,17 @@ $social_items = array(
 					data-loading-text="<?php echo esc_attr__('Cargando mapa...', 'agencia247'); ?>"
 					data-error-text="<?php echo esc_attr__('No se pudo cargar el mapa en este momento.', 'agencia247'); ?>"
 					data-disabled-text="<?php echo esc_attr__('Mapa desactivado desde el personalizador.', 'agencia247'); ?>"
+					data-fallback-text="<?php echo esc_attr__('Mostrando mapa alternativo.', 'agencia247'); ?>"
 					data-map-state="loading"
 				>
+					<iframe
+						class="contact-map-fallback"
+						data-map-fallback
+						src="<?php echo esc_url($map_fallback_url); ?>"
+						loading="lazy"
+						referrerpolicy="no-referrer-when-downgrade"
+						title="<?php echo esc_attr($map_title); ?>"
+					></iframe>
 					<div class="contact-map-status" data-map-status>
 						<span class="contact-map-spinner" aria-hidden="true"></span>
 						<span class="contact-map-status-text"><?php esc_html_e('Cargando mapa...', 'agencia247'); ?></span>

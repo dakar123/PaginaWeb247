@@ -1139,6 +1139,10 @@ h1,
 	filter: brightness(1.05);
 }
 
+#hero .btn-primary--wa {
+	display: none !important;
+}
+
 .service-card::before {
 	content: '';
 	position: absolute;
@@ -1279,6 +1283,15 @@ h1,
 	overflow: hidden;
 	background: radial-gradient(circle at 40% 30%, #e7f0ff 0%, #d7e8ff 55%, #cfdfff 100%);
 	border: 1px solid var(--blue-mid);
+}
+
+.contact-map-fallback {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+	z-index: 1;
 }
 
 .contact-map::before {
@@ -1445,12 +1458,14 @@ h1,
 }
 
 .contact-map[data-map-state='error'],
-.contact-map[data-map-state='disabled'] {
+.contact-map[data-map-state='disabled'],
+.contact-map[data-map-state='fallback'] {
 	background: linear-gradient(140deg, #d9e8ff 0%, #edf3ff 100%);
 }
 
 .contact-map[data-map-state='error'] .contact-map-spinner,
-.contact-map[data-map-state='disabled'] .contact-map-spinner {
+.contact-map[data-map-state='disabled'] .contact-map-spinner,
+.contact-map[data-map-state='fallback'] .contact-map-spinner {
 	border-color: rgba(255,255,255,0.18);
 	border-top-color: rgba(255,255,255,0.45);
 	animation: none;

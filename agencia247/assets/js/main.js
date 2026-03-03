@@ -284,6 +284,35 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 
+	function getMapFallbackElement(mapElement) {
+		return mapElement.querySelector('[data-map-fallback]');
+	}
+
+	function hideMapFallback(mapElement) {
+		var fallbackElement = getMapFallbackElement(mapElement);
+		if (!fallbackElement) {
+			return;
+		}
+		fallbackElement.setAttribute('hidden', 'hidden');
+	}
+
+	function showMapFallback(mapElement) {
+		var fallbackElement = getMapFallbackElement(mapElement);
+		if (!fallbackElement) {
+			return;
+		}
+		fallbackElement.removeAttribute('hidden');
+	}
+
+	function activateMapFallback(mapElement) {
+		showMapFallback(mapElement);
+		setMapStatus(
+			mapElement,
+			'fallback',
+			getMapText(mapElement, 'data-fallback-text', 'Mostrando mapa alternativo.')
+		);
+	}
+
 	function appendMapLibraryCss(mapConfig) {
 		var existingCss = document.querySelector('link[data-agencia247-maplibre="1"], link[href*="maplibre-gl.css"]');
 		if (existingCss) {
@@ -501,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		var radarEnabled = mapElement.getAttribute('data-radar') === '1' || parseInt(localizedMap.radar, 10) === 1;
 
 		if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-			setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+			activateMapFallback(mapElement);
 			return false;
 		}
 
@@ -535,6 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				mapElement.setAttribute('data-map-ready', '1');
 				mapElement.removeAttribute('data-map-initializing');
 				setMapStatus(mapElement, 'ready');
+				hideMapFallback(mapElement);
 				map.resize();
 				if (!reducedMotion) {
 					map.easeTo({
@@ -548,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			map.on('error', function() {
 				if (mapElement.getAttribute('data-map-ready') !== '1') {
 					mapElement.removeAttribute('data-map-initializing');
-					setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+					activateMapFallback(mapElement);
 				}
 			});
 
@@ -563,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			return true;
 		} catch (error) {
 			mapElement.removeAttribute('data-map-initializing');
-			setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+			activateMapFallback(mapElement);
 			return false;
 		}
 	}
@@ -575,7 +605,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 
 		if (!isMapEnabled(mapElement)) {
-			setMapStatus(mapElement, 'disabled', getMapText(mapElement, 'data-disabled-text', 'Mapa desactivado desde el personalizador.'));
+			activateMapFallback(mapElement);
 			return;
 		}
 
@@ -584,11 +614,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		function bootMap() {
 			loadMapLibrary(function(loaded) {
 				if (!loaded) {
-					setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+					activateMapFallback(mapElement);
 					return;
 				}
 				if (!renderContactMap(mapElement) && mapElement.getAttribute('data-map-ready') !== '1') {
-					setMapStatus(mapElement, 'error', getMapText(mapElement, 'data-error-text', 'No se pudo cargar el mapa en este momento.'));
+					activateMapFallback(mapElement);
 				}
 			});
 		}
@@ -647,6 +677,56 @@ document.addEventListener('DOMContentLoaded', function() {
 		observer.observe(footer);
 	}
 
+	function normalizeFormFieldAccessibility() {
+		var autoIndex = 0;
+		var fields = document.querySelectorAll('input, select, textarea');
+		fields.forEach(function(field) {
+			var tagName = field.tagName ? field.tagName.toLowerCase() : '';
+			var type = (field.getAttribute('type') || '').toLowerCase();
+			if (tagName === 'input' && (type === 'hidden' || type === 'submit' || type === 'button' || type === 'reset')) {
+				return;
+			}
+
+			if (!field.id) {
+				autoIndex += 1;
+				field.id = 'agencia247-field-' + autoIndex;
+			}
+
+			if (!field.name) {
+				field.name = field.id;
+			}
+		});
+
+		var labels = document.querySelectorAll('label[for]');
+		labels.forEach(function(label) {
+			var targetId = label.getAttribute('for');
+			if (targetId && document.getElementById(targetId)) {
+				return;
+			}
+
+			var parent = label.parentElement;
+			if (!parent) {
+				return;
+			}
+
+			var relatedField = parent.querySelector('input, select, textarea');
+			if (!relatedField) {
+				return;
+			}
+
+			if (!relatedField.id) {
+				autoIndex += 1;
+				relatedField.id = 'agencia247-field-' + autoIndex;
+			}
+
+			if (!relatedField.name) {
+				relatedField.name = relatedField.id;
+			}
+
+			label.setAttribute('for', relatedField.id);
+		});
+	}
+
 	function handleScroll() {
 		updateNavState();
 		setActiveLink();
@@ -659,6 +739,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	initRevealAnimations();
 	initContactMap();
 	initFloatingWhatsApp();
+	normalizeFormFieldAccessibility();
 	handleScroll();
 	window.addEventListener('scroll', handleScroll, { passive: true });
 });
