@@ -22,11 +22,22 @@
   }
 };
 
-document.addEventListener('DOMContentLoaded', function () {
-  var currentYear = String(new Date().getFullYear());
-  var yearNodes = document.querySelectorAll('[data-current-year]');
-  yearNodes.forEach(function (node) {
-    node.textContent = currentYear;
-  });
-});
+(function () {
+  function applyCurrentYear() {
+    var currentYear = String(new Date().getFullYear());
+    var yearNodes = document.querySelectorAll('[data-current-year]');
+    yearNodes.forEach(function (node) {
+      node.textContent = currentYear;
+    });
+  }
 
+  window.agencia247ApplyCurrentYear = applyCurrentYear;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyCurrentYear);
+  } else {
+    applyCurrentYear();
+  }
+
+  document.addEventListener('agencia247:layout-ready', applyCurrentYear);
+})();

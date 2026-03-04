@@ -1,5 +1,10 @@
 // Main JS for Agencia247 theme.
-document.addEventListener('DOMContentLoaded', function() {
+function agencia247MainInit() {
+	if (window.__agencia247MainInitialized) {
+		return;
+	}
+	window.__agencia247MainInitialized = true;
+
 	var themeConfig = window.agencia247Theme || {};
 	var uiConfig = themeConfig.ui || {};
 	var nav = document.querySelector('.site-nav');
@@ -26,10 +31,21 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 
+	function normalizePathname(pathname) {
+		var clean = (pathname || '').replace(/\/+$/, '');
+		if (clean === '') {
+			return '/';
+		}
+		if (/\/index\.html$/i.test(clean)) {
+			clean = clean.replace(/\/index\.html$/i, '');
+		}
+		return clean === '' ? '/' : clean;
+	}
+
 	function isSamePage(link) {
 		try {
 			var linkUrl = new URL(link.getAttribute('href'), window.location.origin);
-			return linkUrl.pathname.replace(/\/$/, '') === window.location.pathname.replace(/\/$/, '');
+			return normalizePathname(linkUrl.pathname) === normalizePathname(window.location.pathname);
 		} catch (error) {
 			return false;
 		}
@@ -822,4 +838,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	normalizeFormFieldAccessibility();
 	handleScroll();
 	window.addEventListener('scroll', handleScroll, { passive: true });
-});
+}
+
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', agencia247MainInit);
+} else {
+	agencia247MainInit();
+}
