@@ -235,13 +235,27 @@
       'Creatividad y técnica al servicio de tu marca en Puno, Perú.'
     ];
     var pi=0,ci=0,del=false,wait=0;
-    el.style.cssText+=';border-right:2px solid rgba(91,200,245,.7);padding-right:2px;';
-    setInterval(function(){el.style.borderRightColor=el.style.borderRightColor==='transparent'?'rgba(91,200,245,.7)':'transparent';},520);
+    var text=document.createElement('span');
+    var caret=document.createElement('span');
+    text.className='s-hero__sub-text';
+    caret.className='s-hero__sub-caret';
+    caret.setAttribute('aria-hidden','true');
+    el.textContent='';
+    el.classList.add('s-hero__sub--typing');
+    el.appendChild(text);
+    el.appendChild(caret);
+    injectCSS(
+      '.s-hero__sub--typing .s-hero__sub-text{display:inline;}'+
+      '.s-hero__sub--typing .s-hero__sub-caret{display:inline-block;width:2px;height:1.05em;'+
+        'margin-left:.15rem;vertical-align:text-bottom;border-radius:1px;'+
+        'background:rgba(91,200,245,.82);animation:shSubCaret .9s steps(1,end) infinite;}'+
+      '@keyframes shSubCaret{0%,45%{opacity:1;}46%,100%{opacity:0;}}'
+    );
     function tick(){
       if(wait-->0){setTimeout(tick,60);return;}
       var full=phrases[pi];
-      if(!del){el.textContent=full.slice(0,++ci);if(ci===full.length){wait=38;del=true;}setTimeout(tick,40);}
-      else{el.textContent=full.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%phrases.length;wait=14;}setTimeout(tick,20);}
+      if(!del){text.textContent=full.slice(0,++ci);if(ci===full.length){wait=38;del=true;}setTimeout(tick,40);}
+      else{text.textContent=full.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%phrases.length;wait=14;}setTimeout(tick,20);}
     }
     setTimeout(tick,1600);
   }
@@ -365,7 +379,7 @@
   function initDots(){
     var secs=[{id:'about',label:'Nosotros'},{id:'servicios',label:'Servicios'},
       {id:'galeria',label:'Galería'},{id:'productos',label:'Productos'},{id:'contacto',label:'Contacto'}];
-    var nav=document.createElement('nav'); nav.className='sdots';
+    var nav=document.createElement('div'); nav.className='sdots';
     nav.innerHTML=secs.map(function(s){
       return '<a href="#'+s.id+'" class="sdot" data-sec="'+s.id+'" title="'+s.label+'">'+
         '<span></span><em>'+s.label+'</em></a>';
@@ -373,15 +387,20 @@
     document.body.appendChild(nav);
     injectCSS(
       '.sdots{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);'+
-        'display:flex;flex-direction:column;gap:.55rem;z-index:600;}'+
-      '.sdot{display:flex;align-items:center;gap:.55rem;cursor:pointer;text-decoration:none;justify-content:flex-end;}'+
+        'display:flex;flex-direction:column;align-items:flex-end;gap:.55rem;'+
+        'width:max-content;max-width:max-content;background:transparent;border:0;padding:0;'+
+        'box-shadow:none;backdrop-filter:none;pointer-events:none;z-index:80;}'+
+      '.sdot{display:flex;align-items:center;gap:.55rem;cursor:pointer;text-decoration:none;'+
+        'justify-content:flex-end;pointer-events:auto;padding:.35rem .5rem .35rem .9rem;'+
+        'min-height:30px;border-radius:999px;transition:background .25s;}'+
       '.sdot span{width:7px;height:7px;border-radius:50%;flex-shrink:0;'+
         'background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.22);'+
         'transition:background .3s,transform .3s,box-shadow .3s;}'+
       '.sdot em{font-family:"Barlow",sans-serif;font-size:.60rem;font-weight:700;'+
         'letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);font-style:normal;'+
-        'opacity:0;transform:translateX(6px);pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;}'+
+        'opacity:0;transform:translateX(6px);transition:opacity .25s,transform .25s;white-space:nowrap;}'+
       '.sdot:hover em,.sdot.sd-on em{opacity:1;transform:none;}'+
+      '.sdot:hover,.sdot.sd-on{background:rgba(11,21,40,.26);}'+
       '.sdot:hover span,.sdot.sd-on span{background:#5bc8f5;transform:scale(1.5);box-shadow:0 0 10px rgba(91,200,245,.5);}'+
       '.sdot.sd-on em{color:#5bc8f5;}'+
       '@media(max-width:1024px){.sdots{display:none;}}'
