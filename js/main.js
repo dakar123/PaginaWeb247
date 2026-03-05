@@ -108,10 +108,14 @@ function agencia247MainInit() {
 
 	function updateNavState() {
 		if (!nav) {
+			document.body.classList.remove('has-top-nav-space');
 			return;
 		}
 		var currentScrollY = window.scrollY || window.pageYOffset || 0;
 		var delta = currentScrollY - lastScrollY;
+		var topZoneThreshold = 24;
+
+		document.body.classList.toggle('has-top-nav-space', currentScrollY <= topZoneThreshold);
 
 		if (currentScrollY > 14) {
 			nav.classList.add('is-scrolled');
@@ -119,7 +123,7 @@ function agencia247MainInit() {
 			nav.classList.remove('is-scrolled');
 		}
 
-		if (currentScrollY <= 24) {
+		if (currentScrollY <= topZoneThreshold) {
 			nav.classList.remove('is-hidden');
 			upwardScrollDistance = 0;
 			lastScrollY = currentScrollY;
@@ -250,6 +254,120 @@ function agencia247MainInit() {
 				textEl.style.transform = '';
 			}
 		});
+	}
+
+	function initThemedCursor() {
+		if (reducedMotion || !window.matchMedia || window.matchMedia('(pointer: coarse)').matches) {
+			return;
+		}
+		if (document.getElementById('cursor') || document.getElementById('cur') || document.querySelector('.theme-cursor')) {
+			return;
+		}
+
+		var body = document.body;
+		var navTheme = (body.getAttribute('data-nav-theme') || '').toLowerCase();
+		var cursorTheme = (body.getAttribute('data-cursor-theme') || '').toLowerCase();
+		var isHome = body.classList.contains('page-home');
+
+		if (!cursorTheme) {
+			if (isHome) {
+				cursorTheme = 'inicio';
+			} else if (navTheme === 'contenido-digital') {
+				cursorTheme = 'contenido';
+			} else if (navTheme === 'diseno-grafico') {
+				cursorTheme = 'diseno';
+			} else if (navTheme === 'filmacion-eventos') {
+				cursorTheme = 'filmacion';
+			}
+		}
+
+		if (!cursorTheme) {
+			return;
+		}
+		if (navTheme === 'publicidad-offline') {
+			return;
+		}
+		if (navTheme === 'produccion-audiovisual' && !isHome) {
+			return;
+		}
+
+		if (!document.getElementById('agencia247-themed-cursor-style')) {
+			var cursorStyle = document.createElement('style');
+			cursorStyle.id = 'agencia247-themed-cursor-style';
+			cursorStyle.textContent = ''
+				+ 'body.has-themed-cursor, body.has-themed-cursor a, body.has-themed-cursor button,'
+				+ ' body.has-themed-cursor [role="button"], body.has-themed-cursor input,'
+				+ ' body.has-themed-cursor textarea, body.has-themed-cursor select{cursor:none!important;}'
+				+ '.theme-cursor{position:fixed;left:0;top:0;z-index:99997;pointer-events:none;opacity:0;'
+				+ 'will-change:transform;mix-blend-mode:screen;transition:opacity .18s ease;}'
+				+ '.theme-cursor-ring{--ring-scale:1;--ring-rotate:0deg;position:absolute;left:50%;top:50%;'
+				+ 'width:20px;height:20px;border-radius:50%;border:1.4px solid rgba(255,255,255,.72);'
+				+ 'transform:translate(-50%,-50%) rotate(var(--ring-rotate)) scale(var(--ring-scale));'
+				+ 'transition:transform .18s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;}'
+				+ '.theme-cursor-core{position:absolute;left:50%;top:50%;width:4px;height:4px;border-radius:50%;'
+				+ 'transform:translate(-50%,-50%);background:#fff;transition:transform .15s ease,background .2s ease;}'
+				+ '.theme-cursor.is-hover .theme-cursor-ring{--ring-scale:1.36;}'
+				+ '.theme-cursor.is-hover .theme-cursor-core{transform:translate(-50%,-50%) scale(1.22);}'
+				+ '.theme-cursor--inicio .theme-cursor-ring{border-color:rgba(91,200,245,.82);'
+				+ 'box-shadow:0 0 16px rgba(91,200,245,.24);}'
+				+ '.theme-cursor--inicio .theme-cursor-core{background:#5bc8f5;}'
+				+ '.theme-cursor--contenido .theme-cursor-ring{border-color:rgba(91,200,245,.85);'
+				+ 'box-shadow:0 0 14px rgba(91,200,245,.20);}'
+				+ '.theme-cursor--contenido .theme-cursor-core{background:#5bc8f5;}'
+				+ '.theme-cursor--diseno .theme-cursor-ring{--ring-rotate:45deg;border-radius:7px;'
+				+ 'border-color:rgba(124,169,255,.88);box-shadow:0 0 14px rgba(124,169,255,.25);}'
+				+ '.theme-cursor--diseno .theme-cursor-core{border-radius:1px;background:#7ca9ff;}'
+				+ '.theme-cursor--filmacion .theme-cursor-ring{border-style:dashed;'
+				+ 'border-color:rgba(240,245,255,.85);box-shadow:0 0 15px rgba(91,200,245,.20);}'
+				+ '.theme-cursor--filmacion .theme-cursor-core{background:#f2f7ff;box-shadow:0 0 0 3px rgba(91,200,245,.20);}'
+				+ '@media (max-width: 980px){.theme-cursor{display:none!important;}}';
+			document.head.appendChild(cursorStyle);
+		}
+
+		var cursor = document.createElement('div');
+		cursor.className = 'theme-cursor theme-cursor--' + cursorTheme;
+		cursor.innerHTML = '<span class="theme-cursor-ring"></span><span class="theme-cursor-core"></span>';
+		document.body.appendChild(cursor);
+		document.body.classList.add('has-themed-cursor');
+
+		var mouseX = window.innerWidth / 2;
+		var mouseY = window.innerHeight / 2;
+		var renderX = mouseX;
+		var renderY = mouseY;
+
+		window.addEventListener('mousemove', function(event) {
+			mouseX = event.clientX;
+			mouseY = event.clientY;
+			cursor.style.opacity = '1';
+		}, { passive: true });
+
+		document.addEventListener('mouseleave', function() {
+			cursor.style.opacity = '0';
+		});
+		document.addEventListener('mouseenter', function() {
+			cursor.style.opacity = '1';
+		});
+
+		var hoverTargets = document.querySelectorAll(
+			'a, button, [role="button"], .service-card, .project-item, .gal-item, .fev-gal-item, .prod-card, .prod-item, .svc-card, .cd-post__img'
+		);
+		hoverTargets.forEach(function(node) {
+			node.addEventListener('mouseenter', function() {
+				cursor.classList.add('is-hover');
+			});
+			node.addEventListener('mouseleave', function() {
+				cursor.classList.remove('is-hover');
+			});
+		});
+
+		function animateCursor() {
+			renderX += (mouseX - renderX) * 0.28;
+			renderY += (mouseY - renderY) * 0.28;
+			cursor.style.transform = 'translate3d(' + renderX.toFixed(2) + 'px,' + renderY.toFixed(2) + 'px,0)';
+			window.requestAnimationFrame(animateCursor);
+		}
+
+		window.requestAnimationFrame(animateCursor);
 	}
 
 	function initDynamicText() {
@@ -965,6 +1083,7 @@ function agencia247MainInit() {
 	initMenuHoverIntent();
 	initNavSmoothScroll();
 	initBrandLogo();
+	initThemedCursor();
 	initDynamicText();
 	initRevealAnimations();
 	initContactMap();

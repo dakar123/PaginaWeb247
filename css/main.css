@@ -68,6 +68,10 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+body.has-top-nav-space {
+	padding-top: clamp(76px, 8.8vh, 98px);
+}
+
 main {
 	display: block;
 }

@@ -75,15 +75,30 @@
     return window.__agencia247MainScriptPromise;
   }
 
+  function loadMainScriptDeferred() {
+    return new Promise(function (resolve, reject) {
+      var run = function () {
+        loadMainScript().then(resolve).catch(reject);
+      };
+
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(run, { timeout: 420 });
+        return;
+      }
+
+      window.setTimeout(run, 90);
+    });
+  }
+
   function initLayout() {
     includeAll()
       .then(function () {
         document.dispatchEvent(new CustomEvent('agencia247:layout-ready'));
-        return loadMainScript();
+        return loadMainScriptDeferred();
       })
       .catch(function (error) {
         console.error(error);
-        return loadMainScript();
+        return loadMainScriptDeferred();
       });
   }
 
