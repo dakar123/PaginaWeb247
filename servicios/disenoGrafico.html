@@ -1,161 +1,585 @@
-<p><!-- ══════════════════════════════════════════════
-     SECCIÓN: HERO COVER
-══════════════════════════════════════════════ --></p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diseño Gráfico — Agencia 247</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,900&family=Barlow+Semi+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/disenoGrafico.css" />
+</head>
+<body>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"minHeight":430,"minHeightUnit":"px","isDark":false,"className":"av-hero-cover","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light av-hero-cover" style="min-height:430px"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","placeholder":"Escribe el título…","className":"av-hero-title","fontSize":"large"} -->
-<p class="has-text-align-left av-hero-title has-large-font-size">Producción audiovisual</p>
-<!-- /wp:paragraph -->
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 1: HERO — Split editorial
+     Izquierda: Título + CTA + Stats
+     Derecha: Collage de 4 imágenes (composición visual)
+══════════════════════════════════════════════ -->
+<section class="s-hero" id="inicio">
 
-<!-- wp:paragraph {"align":"left","placeholder":"Escribe el título…","className":"av-hero-title-accent","fontSize":"large"} -->
-<p class="has-text-align-left av-hero-title-accent has-large-font-size">que genera resultados.</p>
-<!-- /wp:paragraph -->
+  <!-- Panel izquierdo: propuesta de valor -->
+  <div class="s-hero__left">
+    <span class="s-hero__bg-letter" aria-hidden="true">DG</span>
+    <div class="s-hero__left-inner">
 
-<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"right"}} -->
-<div class="wp-block-buttons"></div>
-<!-- /wp:buttons --></div></div>
-<!-- /wp:cover -->
+      <span class="eyebrow">Agencia 247 · Diseño Gráfico</span>
 
-<p><!-- ══════════════════════════════════════════════
-     SECCIÓN: MEDIA TEXT — DESCRIPCIÓN
-══════════════════════════════════════════════ --></p>
+      <h1 class="s-hero__title">
+        <span class="s-hero__line s-hero__line--white">Marcas que</span>
+        <span class="s-hero__line s-hero__line--white">se ven,</span>
+        <span class="s-hero__line s-hero__line--accent"><em>se recuerdan.</em></span>
+      </h1>
 
-<!-- wp:media-text {"mediaId":264,"mediaLink":"http://agencia247.atwebpages.com/servicios/produccion-audiovisual/upset-disappointed-businesswoman-entering-in-office-meeting-room-late-at-night-3/","mediaType":"image","className":"av-media-text"} -->
-<div class="wp-block-media-text is-stacked-on-mobile av-media-text"><figure class="wp-block-media-text__media"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/03/fondo-2-1024x576.jpg" alt="Producción audiovisual profesional" class="wp-image-264 size-full"/></figure><div class="wp-block-media-text__content"><!-- wp:paragraph -->
-<p>Nuestro equipo especializado en producción audiovisual combina creatividad y técnica para crear contenido que no solo se ve bien, sino que genera resultados medibles en tu estrategia de comunicación.</p>
-<!-- /wp:paragraph -->
+      <p class="s-hero__sub">
+        Diseño gráfico estratégico que construye identidades memorables, comunica con claridad y convierte visualmente a tu audiencia.
+      </p>
 
-<!-- wp:paragraph -->
-<p>Desde la preproducción hasta la entrega final, supervisamos cada etapa del proceso para garantizar un producto que supere tus expectativas y destaque frente a la competencia.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:media-text -->
+      <div class="s-hero__cta-row">
+        <a href="#portafolio" class="btn-primary">Ver portafolio</a>
+        <a href="#servicios" class="btn-outline">Nuestros servicios</a>
+      </div>
 
-<!-- wp:separator -->
-<hr class="wp-block-separator has-alpha-channel-opacity"/>
-<!-- /wp:separator -->
+      <!-- Métricas en el hero -->
+      <div class="s-hero__badge">
+        <div class="s-hero__badge-item">
+          <span class="s-hero__badge-num" data-target="180" data-suffix="+">0+</span>
+          <span class="s-hero__badge-label">Marcas diseñadas</span>
+        </div>
+        <div class="s-hero__badge-item">
+          <span class="s-hero__badge-num" data-target="8" data-suffix=" años">0 años</span>
+          <span class="s-hero__badge-label">De experiencia</span>
+        </div>
+        <div class="s-hero__badge-item">
+          <span class="s-hero__badge-num" data-target="97" data-suffix="%">0%</span>
+          <span class="s-hero__badge-label">Satisfacción</span>
+        </div>
+      </div>
 
-<p><!-- ══════════════════════════════════════════════
-     SECCIÓN: LISTA DE SERVICIOS
-══════════════════════════════════════════════ --></p>
+    </div>
+  </div>
 
-<!-- wp:list {"className":"av-services-list"} -->
-<ul class="wp-block-list av-services-list"><!-- wp:list-item -->
-<li>Sesiones fotográficas profesionales</li>
-<!-- /wp:list-item -->
+  <!-- Panel derecho: collage visual — habla del servicio con imágenes -->
+  <div class="s-hero__right">
+    <div class="s-hero__collage">
+      <!-- ítem tall — ocupa las 2 filas a la izquierda del collage -->
+      <div class="s-hero__collage-item s-hero__collage-item--tall">
+        <img src="../images/02.jpg" alt="Diseño de identidad visual" />
+      </div>
+      <!-- 2 ítems a la derecha -->
+      <div class="s-hero__collage-item">
+        <img src="../images/02.jpg" alt="Piezas gráficas corporativas" />
+      </div>
+      <div class="s-hero__collage-item">
+        <img src="../images/02.jpg" alt="Diseño editorial y packaging" />
+      </div>
+    </div>
 
-<!-- wp:list-item -->
-<li>Grabación de videos corporativos</li>
-<!-- /wp:list-item -->
+    <!-- Badge flotante de confianza -->
+    <div class="s-hero__tag">
+      <span class="s-hero__tag-dot"></span>
+      <div>
+        <strong>Proyectos activos ahora</strong>
+        <span>Lima, Perú · trabajo remoto</span>
+      </div>
+    </div>
+  </div>
 
-<!-- wp:list-item -->
-<li>Edición y postproducción profesional</li>
-<!-- /wp:list-item -->
+</section>
 
-<!-- wp:list-item -->
-<li>Videos promocionales y publicitarios</li>
-<!-- /wp:list-item -->
 
-<!-- wp:list-item -->
-<li>Contenido para redes sociales</li>
-<!-- /wp:list-item -->
+<!-- ══════════════════════════════════════════════
+     BANDA: MARQUEE — disciplinas en movimiento
+══════════════════════════════════════════════ -->
+<div class="s-marquee" aria-hidden="true">
+  <div class="s-marquee__track">
+    <!-- duplicado para efecto infinito -->
+    <span class="s-marquee__item">Identidad de Marca</span>
+    <span class="s-marquee__item">Diseño Editorial</span>
+    <span class="s-marquee__item">Packaging</span>
+    <span class="s-marquee__item">Tipografía</span>
+    <span class="s-marquee__item">Social Media</span>
+    <span class="s-marquee__item">Señalética</span>
+    <span class="s-marquee__item">Branding</span>
+    <span class="s-marquee__item">Motion Design</span>
+    <span class="s-marquee__item">Ilustración</span>
+    <span class="s-marquee__item">UI / UX Design</span>
+    <!-- duplicado -->
+    <span class="s-marquee__item">Identidad de Marca</span>
+    <span class="s-marquee__item">Diseño Editorial</span>
+    <span class="s-marquee__item">Packaging</span>
+    <span class="s-marquee__item">Tipografía</span>
+    <span class="s-marquee__item">Social Media</span>
+    <span class="s-marquee__item">Señalética</span>
+    <span class="s-marquee__item">Branding</span>
+    <span class="s-marquee__item">Motion Design</span>
+    <span class="s-marquee__item">Ilustración</span>
+    <span class="s-marquee__item">UI / UX Design</span>
+  </div>
+</div>
 
-<!-- wp:list-item -->
-<li>Motion graphics y animación</li>
-<!-- /wp:list-item --></ul>
-<!-- /wp:list -->
 
-<!-- wp:separator -->
-<hr class="wp-block-separator has-alpha-channel-opacity"/>
-<!-- /wp:separator -->
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 2: SOBRE NOSOTROS
+     Estructura: imagen doble superpuesta + texto con checks
+══════════════════════════════════════════════ -->
+<section class="s-about" id="nosotros">
+  <div class="container">
+    <div class="s-about__grid">
 
-<p><!-- ══════════════════════════════════════════════
-     SECCIÓN: GALERÍA
-══════════════════════════════════════════════ --></p>
+      <!-- Media: imagen principal + secundaria superpuesta -->
+      <div class="s-about__media reveal">
+        <img class="s-about__img-main" src="../images/02.jpg" alt="Estudio de diseño Agencia 247" />
+        <img class="s-about__img-secondary" src="../images/02.jpg" alt="Detalle de proceso creativo" />
+      </div>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"av-gallery-cover","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light av-gallery-cover"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","placeholder":"Escribe el título…","className":"av-section-title","fontSize":"large"} -->
-<p class="has-text-align-left av-section-title has-large-font-size">Galería de proyectos</p>
-<!-- /wp:paragraph -->
+      <!-- Texto -->
+      <div>
+        <span class="eyebrow reveal">Quiénes somos</span>
+        <h2 class="s-about__title reveal delay-1">
+          Diseño con<br><em>propósito</em><br>y visión.
+        </h2>
+        <p class="s-about__body reveal delay-2">
+          Somos un equipo de diseñadores con <strong>más de 8 años construyendo marcas</strong> en Latinoamérica. Entendemos que el diseño gráfico no es solo estética: es el lenguaje visual de tu negocio.
+        </p>
+        <p class="s-about__body reveal delay-3">
+          Cada proyecto empieza con estrategia y termina con <strong>piezas que generan reconocimiento, confianza y ventas</strong>.
+        </p>
+        <ul class="s-about__checks reveal delay-3">
+          <li>Proceso creativo estructurado y transparente</li>
+          <li>Archivos listos para imprenta y uso digital</li>
+          <li>Revisiones ilimitadas hasta tu aprobación</li>
+          <li>Manual de marca incluido en cada proyecto</li>
+        </ul>
+        <div class="reveal delay-4">
+          <a href="#portafolio" class="btn-primary">Ver nuestro trabajo</a>
+        </div>
+      </div>
 
-<!-- wp:gallery {"linkTo":"none","className":"av-gallery"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped av-gallery"><!-- wp:image {"id":264,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/03/fondo-2-1024x576.jpg" alt="Proyecto audiovisual 1" class="wp-image-264"/><figcaption class="wp-element-caption">Producción corporativa</figcaption></figure>
-<!-- /wp:image -->
+    </div>
+  </div>
+</section>
 
-<!-- wp:image {"id":199,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/02/fondo-1-1024x797.jpg" alt="Proyecto audiovisual 2" class="wp-image-199"/><figcaption class="wp-element-caption">Video comercial</figcaption></figure>
-<!-- /wp:image -->
 
-<!-- wp:image {"id":198,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/02/fondo-1024x797.jpg" alt="Proyecto audiovisual 3" class="wp-image-198"/><figcaption class="wp-element-caption">Digital Marketing</figcaption></figure>
-<!-- /wp:image -->
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 3: SERVICIOS — Grid tipo póster
+     Cards con imagen de fondo + texto superpuesto
+     Layout asimétrico: 1 card grande + 4 medianas
+══════════════════════════════════════════════ -->
+<section class="s-services" id="servicios">
+  <div class="container">
 
-<!-- wp:image {"id":231,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/03/fondo-1024x576.jpg" alt="Proyecto audiovisual 4" class="wp-image-231"/><figcaption class="wp-element-caption">Motion graphics</figcaption></figure>
-<!-- /wp:image -->
+    <div class="section-head reveal">
+      <span class="eyebrow">Lo que hacemos</span>
+      <h2 class="section-title">Servicios de<br><em>diseño gráfico</em></h2>
+      <p class="section-sub">Cubrimos todo el ecosistema visual de tu marca, desde la identidad hasta la pieza final lista para producción.</p>
+    </div>
 
-<!-- wp:image {"id":200,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/02/fondo-2.jpg" alt="Creación de contenido" class="wp-image-200"/><figcaption class="wp-element-caption">Contenido para redes</figcaption></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery --></div></div>
-<!-- /wp:cover -->
+    <!-- Texto decorativo de fondo -->
+    <span class="s-services__bg-text" aria-hidden="true">DISEÑO</span>
 
-<!-- wp:separator {"className":"av-separator"} -->
-<hr class="wp-block-separator has-alpha-channel-opacity av-separator"/>
-<!-- /wp:separator -->
+    <!-- Grid asimétrico de servicios -->
+    <div class="s-services__grid">
 
-<p><!-- ══════════════════════════════════════════════
-     SECCIÓN: PRODUCTOS / CARDS
-══════════════════════════════════════════════ --></p>
+      <!-- Card grande destacada — Identidad de Marca -->
+      <div class="svc-card svc-card--featured reveal">
+        <div class="svc-card__bg">
+          <img src="../images/02.jpg" alt="Identidad de marca" />
+        </div>
+        <div class="svc-card__body">
+          <div class="svc-card__icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a6 6 0 0 1 0 20M12 2a6 6 0 0 0 0 20M2 12h20"/></svg>
+          </div>
+          <span class="svc-card__num">— 01</span>
+          <h3 class="svc-card__title">Identidad de Marca</h3>
+          <p class="svc-card__desc">Logos, sistemas visuales, paletas y tipografías que dan personalidad única y coherente a tu empresa en cualquier soporte.</p>
+        </div>
+      </div>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"av-products-cover","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light av-products-cover"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","placeholder":"Escribe el título…","className":"av-section-title","fontSize":"large"} -->
-<p class="has-text-align-left av-section-title has-large-font-size">Productos</p>
-<!-- /wp:paragraph -->
+      <!-- Card tall — Editorial -->
+      <div class="svc-card svc-card--tall reveal delay-1">
+        <div class="svc-card__bg">
+          <img src="../images/02.jpg" alt="Diseño editorial" />
+        </div>
+        <div class="svc-card__body">
+          <div class="svc-card__icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <span class="svc-card__num">— 02</span>
+          <h3 class="svc-card__title">Diseño Editorial</h3>
+          <p class="svc-card__desc">Catálogos, revistas, reportes y libros con maquetación profesional que comunica con elegancia.</p>
+        </div>
+      </div>
 
-<!-- wp:group {"className":"av-products-grid","layout":{"type":"grid"}} -->
-<div class="wp-block-group av-products-grid"><!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"av-product-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light av-product-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"Escribe el título…","className":"av-card-title","fontSize":"large"} -->
-<p class="has-text-align-center av-card-title has-large-font-size">Fotografía Profesional</p>
-<!-- /wp:paragraph -->
+      <!-- Card — Packaging -->
+      <div class="svc-card reveal delay-2">
+        <div class="svc-card__bg">
+          <img src="../images/02.jpg" alt="Packaging y etiquetado" />
+        </div>
+        <div class="svc-card__body">
+          <div class="svc-card__icon">
+            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <span class="svc-card__num">— 03</span>
+          <h3 class="svc-card__title">Packaging</h3>
+          <p class="svc-card__desc">Empaques y etiquetas que destacan en góndola y refuerzan el valor de tu producto.</p>
+        </div>
+      </div>
 
-<!-- wp:paragraph {"className":"av-card-desc"} -->
-<p class="av-card-desc">Sesiones fotográficas para producto, equipo humano, instalaciones y eventos con iluminación y equipos profesionales.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover -->
+      <!-- Card — Publicidad -->
+      <div class="svc-card reveal delay-1">
+        <div class="svc-card__bg">
+          <img src="../images/02.jpg" alt="Material publicitario" />
+        </div>
+        <div class="svc-card__body">
+          <div class="svc-card__icon">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <span class="svc-card__num">— 04</span>
+          <h3 class="svc-card__title">Material Publicitario</h3>
+          <p class="svc-card__desc">Flyers, banners, roll-ups y vallas para campañas que generan impacto visual inmediato.</p>
+        </div>
+      </div>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"av-product-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light av-product-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"Escribe el título…","className":"av-card-title","fontSize":"large"} -->
-<p class="has-text-align-center av-card-title has-large-font-size">Video Corporativo</p>
-<!-- /wp:paragraph -->
+      <!-- Card — Social Media -->
+      <div class="svc-card reveal delay-2">
+        <div class="svc-card__bg">
+          <img src="../images/02.jpg" alt="Diseño para redes sociales" />
+        </div>
+        <div class="svc-card__body">
+          <div class="svc-card__icon">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <span class="svc-card__num">— 05</span>
+          <h3 class="svc-card__title">Social Media</h3>
+          <p class="svc-card__desc">Templates, kits de contenido y sistemas de diseño para redes sociales coherentes y profesionales.</p>
+        </div>
+      </div>
 
-<!-- wp:paragraph {"className":"av-card-desc"} -->
-<p class="av-card-desc">Producción de videos institucionales, presentaciones de empresa y testimonios que transmiten confianza y profesionalismo.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover -->
+      <!-- Card — UI Digital -->
+      <div class="svc-card reveal delay-3">
+        <div class="svc-card__bg">
+          <img src="../images/02.jpg" alt="Diseño UI digital" />
+        </div>
+        <div class="svc-card__body">
+          <div class="svc-card__icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <span class="svc-card__num">— 06</span>
+          <h3 class="svc-card__title">Diseño Digital</h3>
+          <p class="svc-card__desc">Interfaces, landing pages y activos digitales optimizados para cada plataforma y formato.</p>
+        </div>
+      </div>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"av-product-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light av-product-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"Escribe el título…","className":"av-card-title","fontSize":"large"} -->
-<p class="has-text-align-center av-card-title has-large-font-size">Video Comercial</p>
-<!-- /wp:paragraph -->
+    </div>
+  </div>
+</section>
 
-<!-- wp:paragraph {"className":"av-card-desc"} -->
-<p class="av-card-desc">Videos publicitarios de alto impacto para TV, redes sociales y plataformas digitales con guión, casting y postproducción.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover -->
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"av-product-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light av-product-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"Escribe el título…","className":"av-card-title","fontSize":"large"} -->
-<p class="has-text-align-center av-card-title has-large-font-size">Edición &amp; Postproducción</p>
-<!-- /wp:paragraph -->
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 4: PROCESO CREATIVO
+══════════════════════════════════════════════ -->
+<section class="s-process" id="proceso">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow eyebrow--center">Cómo trabajamos</span>
+      <h2 class="section-title">Proceso <em>creativo</em></h2>
+    </div>
+    <div class="s-process__steps">
+      <div class="process-step reveal">
+        <div class="process-step__num">01</div>
+        <h3 class="process-step__title">Briefing</h3>
+        <p class="process-step__body">Escuchamos tu marca, tus objetivos y tu audiencia para definir una dirección estratégica clara.</p>
+      </div>
+      <div class="process-step reveal delay-1">
+        <div class="process-step__num">02</div>
+        <h3 class="process-step__title">Concepto</h3>
+        <p class="process-step__body">Desarrollamos propuestas visuales únicas que traducen tu esencia en un lenguaje gráfico poderoso.</p>
+      </div>
+      <div class="process-step reveal delay-2">
+        <div class="process-step__num">03</div>
+        <h3 class="process-step__title">Producción</h3>
+        <p class="process-step__body">Ejecutamos el diseño final con precisión técnica, atención al detalle y criterio estético de alto nivel.</p>
+      </div>
+      <div class="process-step reveal delay-3">
+        <div class="process-step__num">04</div>
+        <h3 class="process-step__title">Entrega</h3>
+        <p class="process-step__body">Archivos listos para imprenta y uso digital, con manual de marca y soporte post-entrega incluidos.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- wp:paragraph {"className":"av-card-desc"} -->
-<p class="av-card-desc">Edición profesional con color grading, sound design, motion graphics y efectos visuales para un resultado premium.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover --></div>
-<!-- /wp:group --></div></div>
-<!-- /wp:cover -->
 
-<!-- wp:paragraph -->
-<p></p>
-<!-- /wp:paragraph -->
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 5: GALERÍA — Masonry de proyectos
+══════════════════════════════════════════════ -->
+<section class="s-gallery" id="portafolio">
+  <div class="container">
+
+    <div class="s-gallery__head reveal">
+      <div class="section-head" style="margin-bottom:0">
+        <span class="eyebrow">Portafolio</span>
+        <h2 class="section-title">Proyectos<br><em>destacados</em></h2>
+      </div>
+      <a href="#contacto" class="btn-text">Ver todo el portafolio →</a>
+    </div>
+
+    <div class="gallery-filters reveal">
+      <button class="gf-btn gf-btn--active" data-filter="all">Todos</button>
+      <button class="gf-btn" data-filter="identidad">Identidad</button>
+      <button class="gf-btn" data-filter="editorial">Editorial</button>
+      <button class="gf-btn" data-filter="packaging">Packaging</button>
+      <button class="gf-btn" data-filter="digital">Digital</button>
+    </div>
+
+    <!-- Grid masonry asimétrico -->
+    <div class="gallery-grid">
+
+      <div class="gal-item gal-item--tall reveal" data-cat="identidad">
+        <img src="../images/02.jpg" alt="Identidad visual — Proyecto Axis" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Identidad</span>
+          <span class="gal-item__title">Proyecto Axis</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </div>
+        <span class="gal-item__label">Destacado</span>
+      </div>
+
+      <div class="gal-item reveal delay-1" data-cat="editorial">
+        <img src="../images/02.jpg" alt="Catálogo editorial" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Editorial</span>
+          <span class="gal-item__title">Catálogo Anual</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+      </div>
+
+      <div class="gal-item gal-item--wide reveal delay-2" data-cat="packaging">
+        <img src="../images/02.jpg" alt="Packaging línea premium" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Packaging</span>
+          <span class="gal-item__title">Línea Premium</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <span class="gal-item__label">Packaging</span>
+      </div>
+
+      <div class="gal-item reveal delay-1" data-cat="digital">
+        <img src="../images/02.jpg" alt="Diseño UI App" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Digital</span>
+          <span class="gal-item__title">UI App Kit</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+      </div>
+
+      <div class="gal-item gal-item--tall reveal delay-2" data-cat="identidad">
+        <img src="../images/02.jpg" alt="Sistema visual corporativo" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Identidad</span>
+          <span class="gal-item__title">Sistema Visual</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <span class="gal-item__label">Award</span>
+      </div>
+
+      <div class="gal-item reveal delay-3" data-cat="editorial">
+        <img src="../images/02.jpg" alt="Revista corporativa" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Editorial</span>
+          <span class="gal-item__title">Revista Corporate</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+      </div>
+
+      <div class="gal-item gal-item--wide reveal delay-1" data-cat="packaging">
+        <img src="../images/02.jpg" alt="Etiquetas gourmet" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Packaging</span>
+          <span class="gal-item__title">Etiquetas Gourmet</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+      </div>
+
+      <div class="gal-item reveal delay-2" data-cat="digital">
+        <img src="../images/02.jpg" alt="Social Media Kit" />
+        <div class="gal-item__overlay">
+          <span class="gal-item__cat">Digital</span>
+          <span class="gal-item__title">Social Kit</span>
+        </div>
+        <div class="gal-item__zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 6: PRODUCTOS / PAQUETES
+══════════════════════════════════════════════ -->
+<section class="s-products" id="paquetes">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <span class="eyebrow">Paquetes</span>
+      <h2 class="section-title">Nuestros<br><em>productos</em></h2>
+      <p class="section-sub">Soluciones de diseño completas, pensadas para cada etapa y necesidad de tu marca.</p>
+    </div>
+
+    <div class="s-products__grid">
+
+      <div class="prod-card reveal">
+        <div class="prod-card__img">
+          <img src="../images/02.jpg" alt="Paquete Identidad Completa" />
+        </div>
+        <div class="prod-card__body">
+          <span class="prod-card__tag">Identidad</span>
+          <h3 class="prod-card__title">Marca Completa</h3>
+          <p class="prod-card__desc">Todo lo que tu marca necesita para existir visual y estratégicamente en el mercado desde el primer día.</p>
+          <ul class="prod-card__list">
+            <li>Logo principal + variantes y versiones</li>
+            <li>Paleta de colores + tipografías oficiales</li>
+            <li>Manual de identidad visual PDF</li>
+            <li>Pack completo de archivos editables</li>
+            <li>Papelería institucional básica</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="prod-card reveal delay-1">
+        <div class="prod-card__img">
+          <img src="../images/02.jpg" alt="Paquete Editorial" />
+        </div>
+        <div class="prod-card__body">
+          <span class="prod-card__tag">Editorial</span>
+          <h3 class="prod-card__title">Pack Editorial</h3>
+          <p class="prod-card__desc">Documentos corporativos y materiales impresos con diseño coherente, profesional y listo para imprenta.</p>
+          <ul class="prod-card__list">
+            <li>Catálogos y brochures hasta 24 páginas</li>
+            <li>Reportes y memorias anuales</li>
+            <li>Presentaciones corporativas en PPT</li>
+            <li>Papelería: tarjetas, sobres, carpetas</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="prod-card reveal delay-2">
+        <div class="prod-card__img">
+          <img src="../images/02.jpg" alt="Social Media Kit" />
+        </div>
+        <div class="prod-card__body">
+          <span class="prod-card__tag">Digital</span>
+          <h3 class="prod-card__title">Social Media Kit</h3>
+          <p class="prod-card__desc">Templates editables y sistemas de diseño para que tu presencia digital sea siempre coherente y profesional.</p>
+          <ul class="prod-card__list">
+            <li>30 templates Canva / Figma editables</li>
+            <li>Portadas, highlights e íconos de marca</li>
+            <li>Formatos para Stories, Feed y Reels</li>
+            <li>Guía de uso e instrucciones incluida</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="prod-card reveal delay-3">
+        <div class="prod-card__img">
+          <img src="../images/02.jpg" alt="Packaging y Etiquetado" />
+        </div>
+        <div class="prod-card__body">
+          <span class="prod-card__tag">Packaging</span>
+          <h3 class="prod-card__title">Packaging &amp; Label</h3>
+          <p class="prod-card__desc">Diseño de empaque y etiquetado premium que destaca en góndola y comunica el valor real de tu producto.</p>
+          <ul class="prod-card__list">
+            <li>Diseño de empaque y estructura</li>
+            <li>Gráfica, ilustración y tipografía</li>
+            <li>Arte final para imprenta certificado</li>
+            <li>Mockups de presentación a cliente</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 7: FILOSOFÍA — full width imagen + texto
+══════════════════════════════════════════════ -->
+<section class="s-philosophy">
+  <div class="s-philosophy__media">
+    <img src="../images/02.jpg" alt="Proceso de diseño creativo Agencia 247" />
+  </div>
+  <div class="s-philosophy__text">
+    <span class="eyebrow reveal">Nuestra filosofía</span>
+    <h2 class="s-philosophy__title reveal delay-1">
+      El diseño es<br><em>estrategia</em><br>visible.
+    </h2>
+    <p class="s-philosophy__body reveal delay-2">
+      Creemos que <strong>cada decisión visual es una decisión de negocio</strong>. Un color, una tipografía, un espacio en blanco: todo comunica y todo influye en cómo tu audiencia percibe y elige tu marca.
+    </p>
+    <p class="s-philosophy__body reveal delay-3">
+      Trabajamos con <strong>rigor estratégico y oficio artesanal</strong> para crear piezas que construyen valor de marca a largo plazo, no solo piezas bonitas para hoy.
+    </p>
+    <p class="s-philosophy__body s-philosophy__quote reveal delay-4">
+      "Diseñamos para que tu marca sea reconocida, recordada y elegida."
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 8: CTA FINAL
+══════════════════════════════════════════════ -->
+<section class="s-cta" id="contacto">
+  <div class="s-cta__bg">
+    <img src="../images/02.jpg" alt="Diseño gráfico Agencia 247" />
+    <div class="s-cta__bg-overlay"></div>
+  </div>
+  <div class="s-cta__inner container reveal">
+    <span class="eyebrow eyebrow--center">Hablemos</span>
+    <h2 class="s-cta__title">
+      Tu marca merece<br><em>gran diseño.</em>
+    </h2>
+    <p class="s-cta__sub">
+      Cuéntanos tu proyecto y te presentamos una propuesta visual en menos de 24 horas. Sin compromiso.
+    </p>
+    <div class="s-cta__row">
+      <a href="mailto:hola@agencia247.com" class="btn-primary">Solicitar propuesta</a>
+      <a href="#portafolio" class="btn-outline">Ver portafolio</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- LIGHTBOX -->
+<div class="lb-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Visor de imágenes">
+  <span class="lb-close" id="lb-close" aria-label="Cerrar">&times;</span>
+  <button class="lb-nav lb-nav--prev" aria-label="Anterior">&#8592;</button>
+  <div class="lb-img-wrap">
+    <img id="lb-img" src="" alt="" />
+  </div>
+  <button class="lb-nav lb-nav--next" aria-label="Siguiente">&#8594;</button>
+  <span class="lb-counter"></span>
+</div>
+
+<script src="../js/disenoGrafico.js"></script>
+</body>
+</html>

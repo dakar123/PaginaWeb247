@@ -1,129 +1,329 @@
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"minHeight":430,"minHeightUnit":"px","isDark":false,"className":"pav-hero","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light pav-hero" style="min-height:430px"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","className":"pav-hero-title","fontSize":"large"} -->
-<p class="has-text-align-left pav-hero-title has-large-font-size">Tu marca en el</p>
-<!-- /wp:paragraph -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publicidad Offline — Agencia 247</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,900&family=Barlow+Semi+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/publicidadOffline.css" />
+</head>
+<body>
 
-<!-- wp:paragraph {"align":"left","className":"pav-hero-accent","fontSize":"large"} -->
-<p class="has-text-align-left pav-hero-accent has-large-font-size"><em>mundo real</em></p>
-<!-- /wp:paragraph -->
+<!-- CURSOR -->
+<div class="cursor" id="cursor">
+  <div class="cursor__ring"></div>
+  <div class="cursor__dot"></div>
+</div>
 
-<!-- wp:paragraph -->
-<p>Complementamos la estrategia digital con soluciones impresas y promocionales para una presencia integral de marca. Posicionamos tu negocio tanto en medios digitales como físicos.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover -->
+<!-- BARRA DE PROGRESO -->
+<div id="progress-bar"></div>
 
-<!-- wp:media-text {"mediaId":264,"mediaLink":"http://agencia247.atwebpages.com/servicios/produccion-audiovisual/","mediaType":"image","className":"pav-media"} -->
-<div class="wp-block-media-text is-stacked-on-mobile pav-media"><figure class="wp-block-media-text__media"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/03/fondo-2-1024x576.jpg" alt="Produccion audiovisual" class="wp-image-264 size-full"/></figure><div class="wp-block-media-text__content"><!-- wp:paragraph -->
-<p>La publicidad física sigue siendo uno de los canales más efectivos para generar recordación de marca. Diseñamos e imprimimos materiales de alta calidad que dejan huella en tu audiencia.</p>
-<!-- /wp:paragraph -->
+<!-- ══════════════════════════════════════════════
+     1. HERO — PANTALLA COMPLETA
+     Imagen de fondo + tipografía ENORME + partículas
+══════════════════════════════════════════════ -->
+<section class="s-hero" id="inicio">
 
-<!-- wp:paragraph -->
-<p>Desde volantes y gigantografías hasta merchandising corporativo completo, tenemos todo lo que necesitas para que tu marca esté presente en cada punto de contacto con tus clientes.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:media-text -->
+  <div class="s-hero__bg">
+    <img src="../images/03.jpg" alt="Publicidad offline Agencia 247" />
+  </div>
 
-<!-- wp:list {"className":"pav-list"} -->
-<ul class="wp-block-list pav-list"><!-- wp:list-item -->
-<li>Diseño e impresión de volantes</li>
-<!-- /wp:list-item -->
+  <canvas id="particles-canvas"></canvas>
 
-<!-- wp:list-item -->
-<li>Gigantografías y banners</li>
-<!-- /wp:list-item -->
+  <div class="s-hero__inner">
+    <div class="s-hero__line-deco"></div>
+    <h1 class="s-hero__title">
+      Tu marca<br>en el<br><em>mundo real.</em>
+    </h1>
+    <p class="s-hero__sub">Publicidad física de alto impacto para marcas que dejan huella</p>
+    <div class="s-hero__cta">
+      <a href="#productos" class="btn-primary">Ver materiales</a>
+      <a href="#galeria" class="btn-ghost">Ver proyectos</a>
+    </div>
+  </div>
 
-<!-- wp:list-item -->
-<li>Folder y tarjetas corporativas</li>
-<!-- /wp:list-item -->
+  <div class="s-hero__scroll">
+    <span>Scroll</span>
+    <div class="s-hero__scroll-line"></div>
+  </div>
 
-<!-- wp:list-item -->
-<li>Polos, gorras y merchandising</li>
-<!-- /wp:list-item -->
+</section>
 
-<!-- wp:list-item -->
-<li>Fotochecks y lanyards</li>
-<!-- /wp:list-item -->
 
-<!-- wp:list-item -->
-<li>Material POP para puntos de venta</li>
-<!-- /wp:list-item --></ul>
-<!-- /wp:list -->
+<!-- ══════════════════════════════════════════════
+     2. STATEMENT — FRASE DE IMPACTO
+     Texto grande + imagen fondo derecha
+══════════════════════════════════════════════ -->
+<section class="s-statement">
+  <div class="s-statement__img">
+    <img src="../images/03.jpg" alt="Impresión profesional de alta calidad" />
+  </div>
+  <span class="s-statement__num" aria-hidden="true">247</span>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"pav-gallery-wrap","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light pav-gallery-wrap"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","className":"pav-section-title","fontSize":"large"} -->
-<p class="has-text-align-left pav-section-title has-large-font-size">Galeria de proyectos</p>
-<!-- /wp:paragraph -->
+  <div class="container">
+    <div class="s-statement__inner">
+      <h2 class="s-statement__claim reveal">
+        Lo físico<br>
+        <em>sigue</em><br>
+        impactando.
+      </h2>
+      <p class="s-statement__body reveal d2">
+        La publicidad impresa genera hasta <strong>3× más recordación</strong> que el formato digital. Diseñamos e imprimimos materiales que posicionan tu marca en cada punto de contacto con tus clientes.
+      </p>
+    </div>
+  </div>
+</section>
 
-<!-- wp:gallery {"linkTo":"none","className":"pav-gallery"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped pav-gallery"><!-- wp:image {"id":264,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/03/fondo-2-1024x576.jpg" alt="Produccion corporativa" class="wp-image-264"/><figcaption class="wp-element-caption">Produccion corporativa</figcaption></figure>
-<!-- /wp:image -->
 
-<!-- wp:image {"id":199,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/02/fondo-1-1024x797.jpg" alt="Video comercial" class="wp-image-199"/><figcaption class="wp-element-caption">Video comercial</figcaption></figure>
-<!-- /wp:image -->
+<!-- ══════════════════════════════════════════════
+     3. MARQUEE — MATERIALES EN MOVIMIENTO
+══════════════════════════════════════════════ -->
+<div class="s-marquee" aria-hidden="true">
+  <div class="s-marquee__track">
+    <span class="s-marquee__item">Volantes &amp; Flyers</span>
+    <span class="s-marquee__item">Gigantografías</span>
+    <span class="s-marquee__item">Banners Roll-Up</span>
+    <span class="s-marquee__item">Folders Corporativos</span>
+    <span class="s-marquee__item">Tarjetas de Presentación</span>
+    <span class="s-marquee__item">Merchandising</span>
+    <span class="s-marquee__item">Fotochecks &amp; Lanyards</span>
+    <span class="s-marquee__item">Material POP</span>
+    <span class="s-marquee__item">Vallas Publicitarias</span>
+    <span class="s-marquee__item">Polos &amp; Gorras</span>
+    <!-- duplicado -->
+    <span class="s-marquee__item">Volantes &amp; Flyers</span>
+    <span class="s-marquee__item">Gigantografías</span>
+    <span class="s-marquee__item">Banners Roll-Up</span>
+    <span class="s-marquee__item">Folders Corporativos</span>
+    <span class="s-marquee__item">Tarjetas de Presentación</span>
+    <span class="s-marquee__item">Merchandising</span>
+    <span class="s-marquee__item">Fotochecks &amp; Lanyards</span>
+    <span class="s-marquee__item">Material POP</span>
+    <span class="s-marquee__item">Vallas Publicitarias</span>
+    <span class="s-marquee__item">Polos &amp; Gorras</span>
+  </div>
+</div>
 
-<!-- wp:image {"id":198,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/02/fondo-1024x797.jpg" alt="Digital Marketing" class="wp-image-198"/><figcaption class="wp-element-caption">Digital Marketing</figcaption></figure>
-<!-- /wp:image -->
 
-<!-- wp:image {"id":231,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/03/fondo-1024x576.jpg" alt="Motion graphics" class="wp-image-231"/><figcaption class="wp-element-caption">Motion graphics</figcaption></figure>
-<!-- /wp:image -->
+<!-- ══════════════════════════════════════════════
+     4. PRODUCTOS — GRID EDITORIAL GRANDE
+     Cada ítem: imagen enorme + nombre del material
+══════════════════════════════════════════════ -->
+<section class="s-products" id="productos">
+  <div class="container">
 
-<!-- wp:image {"id":200,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://agencia247.atwebpages.com/wp-content/uploads/2026/02/fondo-2.jpg" alt="Contenido digital" class="wp-image-200"/><figcaption class="wp-element-caption">Contenido digital</figcaption></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery --></div></div>
-<!-- /wp:cover -->
+    <div class="s-products__head">
+      <h2 class="s-products__title reveal">
+        Nuestros<br><em>materiales</em>
+      </h2>
+      <span class="eyebrow reveal d2">Lo que producimos</span>
+    </div>
 
-<!-- wp:separator {"className":"pav-separator"} -->
-<hr class="wp-block-separator has-alpha-channel-opacity pav-separator"/>
-<!-- /wp:separator -->
+    <div class="products-grid">
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"pav-products-wrap","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light pav-products-wrap"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","className":"pav-section-title","fontSize":"large"} -->
-<p class="has-text-align-left pav-section-title has-large-font-size">Productos</p>
-<!-- /wp:paragraph -->
+      <!-- Hero item — Gigantografías (grande, 2 filas) -->
+      <div class="prod-item prod-item--hero reveal-scale">
+        <img src="../images/03.jpg" alt="Gigantografías de gran formato" />
+        <div class="prod-item__overlay"></div>
+        <span class="prod-item__num" aria-hidden="true">01</span>
+        <div class="prod-item__body">
+          <span class="prod-item__cat">Gran Formato</span>
+          <h3 class="prod-item__name">Gigantografías<br>&amp; Vallas</h3>
+          <p class="prod-item__desc">Impresión de gran formato para vallas, fachadas y eventos. Alta resolución y materiales resistentes a la intemperie.</p>
+        </div>
+      </div>
 
-<!-- wp:group {"className":"pav-cards-grid","layout":{"type":"grid"}} -->
-<div class="wp-block-group pav-cards-grid"><!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"pav-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light pav-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","className":"pav-card-title","fontSize":"large"} -->
-<p class="has-text-align-left pav-card-title has-large-font-size">Volantes &amp; Flyers</p>
-<!-- /wp:paragraph -->
+      <!-- Wide item — Volantes fila 1, cols 2-3 -->
+      <div class="prod-item prod-item--wide reveal d1">
+        <img src="../images/03.jpg" alt="Volantes y flyers publicitarios" />
+        <div class="prod-item__overlay"></div>
+        <span class="prod-item__num" aria-hidden="true">02</span>
+        <div class="prod-item__body">
+          <span class="prod-item__cat">Impresión Masiva</span>
+          <h3 class="prod-item__name">Volantes &amp; Flyers</h3>
+          <p class="prod-item__desc">Diseño e impresión en diferentes tamaños y acabados para distribución masiva y campañas BTL.</p>
+        </div>
+      </div>
 
-<!-- wp:paragraph {"className":"pav-card-desc"} -->
-<p class="pav-card-desc">Diseño e impresión de volantes publicitarios en diferentes tamaños y acabados para distribución masiva y campañas BTL.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover -->
+      <!-- Fila 2 col 2 — Folders -->
+      <div class="prod-item reveal d2">
+        <img src="../images/03.jpg" alt="Folders corporativos personalizados" />
+        <div class="prod-item__overlay"></div>
+        <span class="prod-item__num" aria-hidden="true">03</span>
+        <div class="prod-item__body">
+          <span class="prod-item__cat">Corporativo</span>
+          <h3 class="prod-item__name">Folders &amp; Papelería</h3>
+          <p class="prod-item__desc">Folders, tarjetas y papelería personalizada con el logo y colores de tu empresa.</p>
+        </div>
+      </div>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"pav-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light pav-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","className":"pav-card-title","fontSize":"large"} -->
-<p class="has-text-align-left pav-card-title has-large-font-size">Folder Corporativo</p>
-<!-- /wp:paragraph -->
+      <!-- Fila 2 col 3 — Merchandising -->
+      <div class="prod-item reveal d3">
+        <img src="../images/03.jpg" alt="Merchandising corporativo" />
+        <div class="prod-item__overlay"></div>
+        <span class="prod-item__num" aria-hidden="true">04</span>
+        <div class="prod-item__body">
+          <span class="prod-item__cat">Merchandising</span>
+          <h3 class="prod-item__name">Polos, Gorras<br>&amp; Más</h3>
+          <p class="prod-item__desc">Uniformes, regalos corporativos y material promocional con tu marca impresa.</p>
+        </div>
+      </div>
 
-<!-- wp:paragraph {"className":"pav-card-desc"} -->
-<p class="pav-card-desc">Folders corporativos personalizados con el logo y colores de tu empresa para presentaciones y reuniones de negocios.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover -->
+    </div>
+  </div>
+</section>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"pav-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light pav-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","className":"pav-card-title","fontSize":"large"} -->
-<p class="has-text-align-left pav-card-title has-large-font-size">Gigantografías</p>
-<!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"className":"pav-card-desc"} -->
-<p class="pav-card-desc">Impresión de gran formato para vallas, fachadas y eventos. Alta resolución y materiales resistentes a la intemperie.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover -->
+<!-- ══════════════════════════════════════════════
+     5. FEATURE — STATS DE IMPACTO
+     Imagen de fondo + 3 números grandes
+══════════════════════════════════════════════ -->
+<section class="s-feature">
+  <div class="s-feature__bg">
+    <img src="../images/03.jpg" alt="Resultados de publicidad offline" />
+  </div>
+  <div class="container">
+    <div class="s-feature__inner">
+      <div class="s-feature__stats">
+        <div class="s-feature__stat reveal">
+          <span class="s-feature__stat-num" data-target="180" data-suffix="+">0+</span>
+          <span class="s-feature__stat-label">Marcas impresas</span>
+        </div>
+        <div class="s-feature__stat reveal d1">
+          <span class="s-feature__stat-num" data-target="3" data-suffix="×">0×</span>
+          <span class="s-feature__stat-label">Más recordación</span>
+        </div>
+        <div class="s-feature__stat reveal d2">
+          <span class="s-feature__stat-num" data-target="24" data-suffix="h">0h</span>
+          <span class="s-feature__stat-label">Tiempo de entrega</span>
+        </div>
+      </div>
+      <p class="s-feature__claim reveal d3">
+        Producción rápida,<br><em>calidad de exportación.</em>
+      </p>
+    </div>
+  </div>
+</section>
 
-<!-- wp:cover {"overlayColor":"white","isUserOverlayColor":true,"isDark":false,"className":"pav-card","layout":{"type":"constrained"}} -->
-<div class="wp-block-cover is-light pav-card"><span aria-hidden="true" class="wp-block-cover__background has-white-background-color has-background-dim-100 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"left","className":"pav-card-title","fontSize":"large"} -->
-<p class="has-text-align-left pav-card-title has-large-font-size">Edicion &amp; Fotochecks &amp; Lanyard</p>
-<!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"className":"pav-card-desc"} -->
-<p class="pav-card-desc">Fotochecks personalizados con foto y datos del colaborador, más lanyards corporativos con tu logotipo.</p>
-<!-- /wp:paragraph --></div></div>
-<!-- /wp:cover --></div>
-<!-- /wp:group --></div></div>
-<!-- /wp:cover -->
+<!-- ══════════════════════════════════════════════
+     6. GALERÍA — TIRA HORIZONTAL DRAGGABLE
+     Proyectos reales con scroll lateral
+══════════════════════════════════════════════ -->
+<section class="s-gallery" id="galeria">
+
+  <div class="s-gallery__head">
+    <h2 class="s-gallery__title reveal">
+      Proyectos<br><em>reales</em>
+    </h2>
+    <a href="#contacto" class="btn-ghost reveal d1">Ver todos →</a>
+  </div>
+
+  <!-- Strip scrolleable (también drag) -->
+  <div class="gallery-strip" id="gallery-strip">
+
+    <div class="gal-card">
+      <img src="../images/03.jpg" alt="Campaña BTL — Lanzamiento de producto" />
+      <div class="gal-card__overlay"></div>
+      <div class="gal-card__body">
+        <span class="gal-card__cat">Campaña BTL</span>
+        <h3 class="gal-card__title">Lanzamiento<br>de Producto</h3>
+      </div>
+    </div>
+
+    <div class="gal-card">
+      <img src="../images/03.jpg" alt="Gigantografía fachada corporativa" />
+      <div class="gal-card__overlay"></div>
+      <div class="gal-card__body">
+        <span class="gal-card__cat">Gran Formato</span>
+        <h3 class="gal-card__title">Fachada<br>Corporativa</h3>
+      </div>
+    </div>
+
+    <div class="gal-card">
+      <img src="../images/03.jpg" alt="Kit de bienvenida corporativo" />
+      <div class="gal-card__overlay"></div>
+      <div class="gal-card__body">
+        <span class="gal-card__cat">Merchandising</span>
+        <h3 class="gal-card__title">Kit<br>Bienvenida</h3>
+      </div>
+    </div>
+
+    <div class="gal-card">
+      <img src="../images/03.jpg" alt="Stand para evento y feria" />
+      <div class="gal-card__overlay"></div>
+      <div class="gal-card__body">
+        <span class="gal-card__cat">Eventos</span>
+        <h3 class="gal-card__title">Stand<br>Corporativo</h3>
+      </div>
+    </div>
+
+    <div class="gal-card">
+      <img src="../images/03.jpg" alt="Carpeta corporativa y papelería" />
+      <div class="gal-card__overlay"></div>
+      <div class="gal-card__body">
+        <span class="gal-card__cat">Papelería</span>
+        <h3 class="gal-card__title">Identidad<br>Impresa</h3>
+      </div>
+    </div>
+
+    <div class="gal-card">
+      <img src="../images/03.jpg" alt="Material POP punto de venta" />
+      <div class="gal-card__overlay"></div>
+      <div class="gal-card__body">
+        <span class="gal-card__cat">Material POP</span>
+        <h3 class="gal-card__title">Punto<br>de Venta</h3>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="gallery-drag-hint">Desliza para ver más proyectos</p>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     7. QUOTE — FRASE FILOSOFÍA PANTALLA COMPLETA
+══════════════════════════════════════════════ -->
+<section class="s-quote">
+  <div class="s-quote__bg">
+    <img src="../images/03.jpg" alt="Filosofía de Agencia 247" />
+  </div>
+  <div class="s-quote__inner">
+    <p class="s-quote__text reveal">
+      Lo digital llega<br>a la pantalla.<br>Lo físico llega<br><em>al corazón.</em>
+    </p>
+    <span class="s-quote__attr reveal d2">— Agencia 247 · Publicidad Offline</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     8. CTA FINAL — ENORME, IMPACTANTE
+══════════════════════════════════════════════ -->
+<section class="s-cta" id="contacto">
+  <div class="s-cta__bg">
+    <img src="../images/03.jpg" alt="Contacta a Agencia 247" />
+  </div>
+  <div class="s-cta__rings" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="s-cta__inner container reveal">
+    <span class="s-cta__label">Agencia 247 · Lima, Perú</span>
+    <h2 class="s-cta__title">
+      Imprime tu<br><em>marca</em><br>en el mundo.
+    </h2>
+    <p class="s-cta__sub">Cuéntanos tu proyecto y recibe una cotización en menos de 24 horas.</p>
+    <div class="s-cta__row">
+      <a href="mailto:hola@agencia247.com" class="btn-primary">Pedir cotización</a>
+      <a href="#galeria" class="btn-ghost">Ver proyectos</a>
+    </div>
+  </div>
+</section>
+
+<script src="../js/publicidadOffline.js"></script>
+</body>
+</html>

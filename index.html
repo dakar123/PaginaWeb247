@@ -9,7 +9,15 @@
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <div data-include="partials/header.html"></div>
+  <div id="header"></div>
+
+<script>
+fetch("partials/header.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header").innerHTML = data;
+  });
+</script>
 
   <main id="site-content">
     <section id="hero">
