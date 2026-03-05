@@ -4,6 +4,15 @@
     return pathname.indexOf('/servicios/') !== -1 ? '../' : '';
   }
 
+  function appendAssetVersion(path) {
+    var cfg = window.agencia247Theme || {};
+    var version = (cfg.assetVersion || '').toString().trim();
+    if (!version) {
+      return path;
+    }
+    return path + (path.indexOf('?') === -1 ? '?v=' : '&v=') + encodeURIComponent(version);
+  }
+
   function includeNode(node) {
     var includePath = node.getAttribute('data-include');
     if (!includePath) {
@@ -62,7 +71,7 @@
       }
 
       var script = document.createElement('script');
-      script.src = getAssetPrefix() + 'js/main.js';
+      script.src = appendAssetVersion(getAssetPrefix() + 'js/main.js');
       script.setAttribute('data-agencia247-main', '1');
       script.addEventListener('load', function () {
         script.setAttribute('data-loaded', '1');

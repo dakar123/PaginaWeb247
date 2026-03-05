@@ -1,4 +1,5 @@
 ﻿window.agencia247Theme = {
+  assetVersion: '20260305-1',
   brand: {
     logoUrl: 'logo247vector.svg',
     faviconUrl: 'logo247vector.svg'
@@ -104,3 +105,4 @@
 
   document.addEventListener('agencia247:layout-ready', applySharedUi);
 })();
+
