@@ -451,7 +451,7 @@ h1 em {
 /* ─── Ticker ────────────────────────────────────────────────── */
 .ticker-section {
 	padding: 2.8rem 0;
-	background: var(--white);
+	background: var(--blue-soft);
 	border-top: 1px solid var(--border-soft);
 	border-bottom: 1px solid var(--border-soft);
 	overflow: hidden;
@@ -557,7 +557,7 @@ section {
 
 /* ─── About ─────────────────────────────────────────────────── */
 #about {
-	background: var(--bg2);
+	background: var(--blue-soft);
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 6rem;
@@ -600,7 +600,7 @@ section {
 
 /* ─── Servicios ─────────────────────────────────────────────── */
 #servicios {
-	background: var(--white);
+	background: var(--blue-soft);
 }
 
 .services-intro {
@@ -764,7 +764,7 @@ section {
 /* ─── Proyectos ─────────────────────────────────────────────── */
 #proyectos {
 	padding: 5rem 0;
-	background: var(--bg);
+	background: var(--blue-soft);
 	overflow: hidden;
 }
 
@@ -775,7 +775,7 @@ section {
 
 /* ─── Contacto ──────────────────────────────────────────────── */
 #contacto {
-	background: var(--bg2);
+	background: var(--blue-soft);
 	position: relative;
 	overflow: hidden;
 }
