@@ -1,4 +1,9 @@
 ﻿(function () {
+  function getAssetPrefix() {
+    var pathname = (window.location.pathname || '').replace(/\\/g, '/').toLowerCase();
+    return pathname.indexOf('/servicios/') !== -1 ? '../' : '';
+  }
+
   function includeNode(node) {
     var includePath = node.getAttribute('data-include');
     if (!includePath) {
@@ -57,7 +62,7 @@
       }
 
       var script = document.createElement('script');
-      script.src = 'js/main.js';
+      script.src = getAssetPrefix() + 'js/main.js';
       script.setAttribute('data-agencia247-main', '1');
       script.addEventListener('load', function () {
         script.setAttribute('data-loaded', '1');

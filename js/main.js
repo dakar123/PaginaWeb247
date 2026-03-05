@@ -16,12 +16,48 @@ function agencia247MainInit() {
 		loading: false,
 		callbacks: []
 	};
+	var relativePrefix = ((window.location.pathname || '').replace(/\\/g, '/').toLowerCase().indexOf('/servicios/') !== -1) ? '../' : '';
+	var lastScrollY = window.pageYOffset || 0;
+	var upwardScrollDistance = 0;
 
 	if (!Number.isFinite(navDropdownDelay) || navDropdownDelay < 80) {
 		navDropdownDelay = 260;
 	}
 
 	document.body.classList.add('js-ready');
+
+	function resolveSitePath(path) {
+		if (!path) {
+			return '';
+		}
+		if (/^(?:[a-z]+:)?\/\//i.test(path) || path.indexOf('mailto:') === 0 || path.indexOf('tel:') === 0 || path.charAt(0) === '#') {
+			return path;
+		}
+		return relativePrefix + path.replace(/^\.\//, '');
+	}
+
+	function resolveSharedRoutes() {
+		var routeNodes = document.querySelectorAll('[data-route]');
+		var assetNodes = document.querySelectorAll('[data-asset]');
+
+		routeNodes.forEach(function(node) {
+			var route = node.getAttribute('data-route');
+			if (!route) {
+				return;
+			}
+			node.setAttribute('href', resolveSitePath(route));
+		});
+
+		assetNodes.forEach(function(node) {
+			var assetPath = node.getAttribute('data-asset');
+			if (!assetPath) {
+				return;
+			}
+			node.setAttribute('src', resolveSitePath(assetPath));
+		});
+	}
+
+	resolveSharedRoutes();
 
 	function linkHash(link) {
 		try {
@@ -74,11 +110,40 @@ function agencia247MainInit() {
 		if (!nav) {
 			return;
 		}
-		if (window.scrollY > 14) {
+		var currentScrollY = window.scrollY || window.pageYOffset || 0;
+		var delta = currentScrollY - lastScrollY;
+
+		if (currentScrollY > 14) {
 			nav.classList.add('is-scrolled');
 		} else {
 			nav.classList.remove('is-scrolled');
 		}
+
+		if (currentScrollY <= 24) {
+			nav.classList.remove('is-hidden');
+			upwardScrollDistance = 0;
+			lastScrollY = currentScrollY;
+			return;
+		}
+
+		if (document.activeElement && nav.contains(document.activeElement)) {
+			nav.classList.remove('is-hidden');
+			upwardScrollDistance = 0;
+			lastScrollY = currentScrollY;
+			return;
+		}
+
+		if (delta > 2) {
+			upwardScrollDistance = 0;
+			nav.classList.add('is-hidden');
+		} else if (delta < -2) {
+			upwardScrollDistance += Math.abs(delta);
+			if (upwardScrollDistance > 18) {
+				nav.classList.remove('is-hidden');
+			}
+		}
+
+		lastScrollY = currentScrollY;
 	}
 
 	function initMenuHoverIntent() {
@@ -766,7 +831,63 @@ function agencia247MainInit() {
 	function initFloatingWhatsApp() {
 		var waButton = document.querySelector('.wa-floating-btn');
 		var footer = document.querySelector('footer');
-		if (!waButton || !footer || !('IntersectionObserver' in window)) {
+		if (!waButton) {
+			return;
+		}
+
+		var pathname = normalizePathname(window.location.pathname).toLowerCase();
+		var waContext = (document.body.getAttribute('data-wa-context') || '').toLowerCase();
+		var defaultMessage = waButton.getAttribute('data-wa-default') || 'Hola, quiero informacion sobre sus servicios.';
+		var messages = {
+			inicio: 'Hola, estoy interesado en agendar una cita para potenciar mi marca.',
+			servicios: 'Hola, quiero informacion sobre todos sus servicios.',
+			proyectos: 'Hola, estoy revisando sus proyectos y quiero una propuesta para mi marca.',
+			contacto: 'Hola, quiero comunicarme con Agencia 24/7 para recibir una cotizacion.',
+			contenido_digital: 'Hola, me interesa el servicio de creacion de contenido y campanas digitales.',
+			diseno_grafico: 'Hola, me interesa el servicio de diseno grafico corporativo y publicitario.',
+			produccion_audiovisual: 'Hola, me interesa el servicio de produccion audiovisual.',
+			publicidad_offline: 'Hola, me interesa el servicio de publicidad offline.',
+			filmacion_eventos: 'Hola, me interesa el servicio de filmacion profesional de eventos.'
+		};
+
+		if (!waContext) {
+			if (pathname === '/' || /\/index(?:\.html)?$/i.test(pathname)) {
+				waContext = 'inicio';
+			} else if (/\/servicios(?:\.html)?$/i.test(pathname)) {
+				waContext = 'servicios';
+			} else if (pathname.indexOf('/servicios/contenidodigital') !== -1) {
+				waContext = 'contenido_digital';
+			} else if (pathname.indexOf('/servicios/disenografico') !== -1) {
+				waContext = 'diseno_grafico';
+			} else if (pathname.indexOf('/servicios/produccionaudiovisual') !== -1) {
+				waContext = 'produccion_audiovisual';
+			} else if (pathname.indexOf('/servicios/publicidadoffline') !== -1) {
+				waContext = 'publicidad_offline';
+			} else if (pathname.indexOf('/servicios/filmacioneventos') !== -1) {
+				waContext = 'filmacion_eventos';
+			} else if (/\/proyectos(?:\.html)?$/i.test(pathname)) {
+				waContext = 'proyectos';
+			} else if (/\/contacto(?:\.html)?$/i.test(pathname)) {
+				waContext = 'contacto';
+			}
+		}
+
+		var waMessage = messages[waContext] || defaultMessage;
+		var waNumber = waButton.getAttribute('data-wa-number') || '';
+		if (!waNumber) {
+			var hrefMatch = (waButton.getAttribute('href') || '').match(/wa\.me\/(\d+)/i);
+			if (hrefMatch && hrefMatch[1]) {
+				waNumber = hrefMatch[1];
+			}
+		}
+		if (!waNumber) {
+			waNumber = '51987654321';
+		}
+
+		waButton.setAttribute('href', 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(waMessage));
+		waButton.setAttribute('aria-label', 'WhatsApp: ' + waMessage);
+
+		if (!footer || !('IntersectionObserver' in window)) {
 			return;
 		}
 

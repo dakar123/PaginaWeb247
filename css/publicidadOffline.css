@@ -256,16 +256,20 @@ button{ cursor: none; border: none; background: none; }
 
 /* Indicador scroll */
 .s-hero__scroll {
-  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: clamp(0.7rem, 2.2vh, 1.4rem); left: 50%; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
-  z-index: 3; animation: heroFade 1s var(--ease) both 1s;
+  width: max-content;
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+  animation: heroFade 1s var(--ease) both 1s;
 }
 .s-hero__scroll span {
   font-family: var(--f-body); font-size: 0.60rem; font-weight: 700;
   letter-spacing: 0.20em; text-transform: uppercase; color: var(--c-muted);
 }
 .s-hero__scroll-line {
-  width: 1px; height: 48px;
+  width: 1px; height: 36px;
   background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
   animation: scrollPulse 1.8s ease infinite;
 }

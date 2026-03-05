@@ -234,16 +234,62 @@
       'Desde la preproducción hasta la entrega final, cada detalle importa.',
       'Creatividad y técnica al servicio de tu marca en Puno, Perú.'
     ];
-    var pi=0,ci=0,del=false,wait=0;
-    el.style.cssText+=';border-right:2px solid rgba(91,200,245,.7);padding-right:2px;';
-    setInterval(function(){el.style.borderRightColor=el.style.borderRightColor==='transparent'?'rgba(91,200,245,.7)':'transparent';},520);
-    function tick(){
-      if(wait-->0){setTimeout(tick,60);return;}
-      var full=phrases[pi];
-      if(!del){el.textContent=full.slice(0,++ci);if(ci===full.length){wait=38;del=true;}setTimeout(tick,40);}
-      else{el.textContent=full.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%phrases.length;wait=14;}setTimeout(tick,20);}
+    var phraseIndex=0;
+    var charIndex=0;
+    var deleting=false;
+    var nextTick=performance.now()+900;
+
+    var typed=document.createElement('span');
+    typed.className='s-hero__typed-text';
+    var caret=document.createElement('span');
+    caret.className='s-hero__typed-caret';
+    caret.setAttribute('aria-hidden','true');
+
+    el.textContent='';
+    el.appendChild(typed);
+    el.appendChild(caret);
+
+    injectCSS(
+      '.s-hero__typed-text{display:inline;}'+
+      '.s-hero__typed-caret{display:inline-block;width:2px;height:1.05em;'+
+        'margin-left:.18rem;vertical-align:-0.12em;background:rgba(91,200,245,.88);'+
+        'animation:heroTypedCaretBlink .72s steps(1,end) infinite;}'+
+      '@keyframes heroTypedCaretBlink{0%,46%{opacity:1;}47%,100%{opacity:0;}}'
+    );
+
+    function loop(ts){
+      if(ts < nextTick){
+        requestAnimationFrame(loop);
+        return;
+      }
+
+      var full=phrases[phraseIndex];
+
+      if(!deleting){
+        charIndex++;
+        typed.textContent=full.slice(0,charIndex);
+        if(charIndex>=full.length){
+          deleting=true;
+          nextTick=ts+1300;
+        } else {
+          nextTick=ts+38;
+        }
+      } else {
+        charIndex--;
+        typed.textContent=full.slice(0,charIndex);
+        if(charIndex<=0){
+          deleting=false;
+          phraseIndex=(phraseIndex+1)%phrases.length;
+          nextTick=ts+320;
+        } else {
+          nextTick=ts+24;
+        }
+      }
+
+      requestAnimationFrame(loop);
     }
-    setTimeout(tick,1600);
+
+    requestAnimationFrame(loop);
   }
 
   /* ═══ 10  SCROLL REVEAL ═════════════════════════════════════ */
@@ -919,32 +965,8 @@
 
   /* ═══ CURSOR LIENZO (CROSSHAIR) ═══════════════════════════ */
   function initCursor(){
-    if(window.matchMedia('(pointer:coarse)').matches) return;
-    injectCSS(
-      'html,body,*{cursor:none!important;}'+
-      '#cur{position:fixed;top:0;left:0;pointer-events:none;z-index:99999;will-change:transform;}'+
-      '.cur-h,.cur-v{position:absolute;background:rgba(91,200,245,.75);}'+
-      '.cur-h{width:20px;height:1px;top:50%;left:50%;transform:translate(-50%,-50%);}'+
-      '.cur-v{width:1px;height:20px;top:50%;left:50%;transform:translate(-50%,-50%);}'+
-      '.cur-dot{position:absolute;width:3px;height:3px;background:#5bc8f5;border-radius:50%;'+
-        'top:50%;left:50%;transform:translate(-50%,-50%);transition:transform .15s;}'+
-      '#cur.hover .cur-dot{transform:translate(-50%,-50%) scale(0);}'+
-      '#cur.hover .cur-h{width:28px;}'+
-      '#cur.hover .cur-v{height:28px;}'
-    );
-    var el=document.createElement('div'); el.id='cur';
-    el.innerHTML='<div class="cur-h"></div><div class="cur-v"></div><div class="cur-dot"></div>';
-    document.body.appendChild(el);
-    var mx=0,my=0,rx=0,ry=0;
-    window.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
-    onRAF(function(){
-      rx=lerp(rx,mx,.18); ry=lerp(ry,my,.18);
-      el.style.transform='translate('+(rx-10)+'px,'+(ry-10)+'px)';
-    });
-    qsa('a,button,.gal-item,.svc-card,.prod-card').forEach(function(e){
-      e.addEventListener('mouseenter',function(){el.classList.add('hover');});
-      e.addEventListener('mouseleave',function(){el.classList.remove('hover');});
-    });
+    // Use native cursor to avoid low-FPS lag from the overlay crosshair.
+    return;
   }
 
 
@@ -985,7 +1007,6 @@
     initMagnetic();
     initGallery();
     initGalleryHoverFx();
-    initShockwave();
     initRipple();
     initDots();
     initStatGlow();
@@ -995,8 +1016,6 @@
     initCountdown();
     initBeforeAfter();
     initKonamiCode();
-    initSparkTrail();
-    initAudioFeedback();
     initScrollTop();
     initToasts();
   }

@@ -27,6 +27,17 @@
 };
 
 (function () {
+  function resolveSharedAssetPath(path) {
+    if (!path) {
+      return '';
+    }
+    if (/^(?:[a-z]+:)?\/\//i.test(path) || path.charAt(0) === '/') {
+      return path;
+    }
+    var prefix = ((window.location.pathname || '').replace(/\\/g, '/').toLowerCase().indexOf('/servicios/') !== -1) ? '../' : '';
+    return prefix + path.replace(/^\.\//, '');
+  }
+
   function applyCurrentYear() {
     var currentYear = String(new Date().getFullYear());
     var yearNodes = document.querySelectorAll('[data-current-year]');
@@ -39,7 +50,7 @@
     var theme = window.agencia247Theme || {};
     var brand = theme.brand || {};
     var map = theme.map || {};
-    var logoUrl = brand.logoUrl || map.logoUrl || '';
+    var logoUrl = resolveSharedAssetPath(brand.logoUrl || map.logoUrl || '');
 
     if (logoUrl) {
       var logoNodes = document.querySelectorAll('.js-brand-logo img');
@@ -53,7 +64,7 @@
       });
     }
 
-    var faviconUrl = brand.faviconUrl || logoUrl;
+    var faviconUrl = resolveSharedAssetPath(brand.faviconUrl || logoUrl);
     if (!faviconUrl) {
       return;
     }
