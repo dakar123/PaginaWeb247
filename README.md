@@ -15,7 +15,7 @@ Version estatica en HTML, CSS y JS puro para Cloudflare Pages.
 - `js/site-config.js`: configuracion global.
 - `js/layout.js`: loader de parciales compartidos.
 - `js/main.js`: interacciones y animaciones del sitio.
-- `images/image.png`: imagen base.
+- `logo247vector.svg`: logo principal (header, favicon y mapa).
 - `_redirects`: rutas amigables para Cloudflare.
 
 ## Publicar en Cloudflare Pages
@@ -32,3 +32,4 @@ Version estatica en HTML, CSS y JS puro para Cloudflare Pages.
 - Servicios: edita/duplica bloques `<article class="service-card">`.
 - Proyectos: edita/duplica bloques `.project-item`.
 - Contacto: edita redes y datos del mapa en `#agencia247-contact-map`.
+- Branding futuro: cambia `logoUrl` y `faviconUrl` en `js/site-config.js`.
