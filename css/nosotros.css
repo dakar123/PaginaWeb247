@@ -515,3 +515,13 @@ a   { text-decoration: none; color: inherit; }
   .ns-stat              { border-right: none; }
   .ns-cta__title        { font-size: clamp(3rem, 12vw, 5rem); }
 }
+
+/* Ensure shared header uses the site's primary fonts and sizing
+   so the header in "nosotros" matches the header on other pages. */
+nav, .site-nav, .logo, .logo-text, nav ul, nav ul a {
+  font-family: 'DM Sans', sans-serif !important;
+}
+.logo-text { font-family: 'Syne', sans-serif !important; font-weight:800 !important; }
+nav .logo img { height: 44px !important; }
+nav ul { gap: 2.5rem !important; }
+nav ul a { font-size: .85rem !important; font-weight: 500 !important; letter-spacing: .05em !important; text-transform: uppercase !important; }
