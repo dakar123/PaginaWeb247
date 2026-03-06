@@ -119,43 +119,24 @@
   }
 
   /* ═══ 04  CURSOR PERSONALIZADO ══════════════════════════════ */
-
-
-  /* ═══ 05  PARTÍCULAS CANVAS + REPULSIÓN ══════════════════════ */
+  /* ═══ 05  CURSOR PERSONALIZADO ══════════════════════════════ */
   function initParticles(){
-    var hero=qs('.s-hero'); if(!hero) return;
-    var cv=document.createElement('canvas');
-    cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;';
-    hero.prepend(cv);
-    var ctx=cv.getContext('2d'), W,H,pts=[];
-    function resize(){W=cv.width=hero.offsetWidth;H=cv.height=hero.offsetHeight;}
-    resize(); window.addEventListener('resize',resize);
-    function mk(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,
-      vy:-(Math.random()*.32+.08),r:Math.random()*1.5+.3,a:Math.random()*.5+.1,
-      life:0,max:Math.random()*300+120};}
-    for(var i=0;i<100;i++){var p=mk();p.life=Math.random()*p.max;pts.push(p);}
-    var mpx=-9999,mpy=-9999;
-    hero.addEventListener('mousemove',function(e){var r=hero.getBoundingClientRect();mpx=e.clientX-r.left;mpy=e.clientY-r.top;});
-    hero.addEventListener('mouseleave',function(){mpx=mpy=-9999;});
-    onRAF(function(){
-      ctx.clearRect(0,0,W,H);
-      for(var a=0;a<pts.length;a++){
-        for(var b=a+1;b<pts.length;b++){
-          var dx=pts[a].x-pts[b].x,dy=pts[a].y-pts[b].y,d=Math.sqrt(dx*dx+dy*dy);
-          if(d<100){ctx.beginPath();ctx.strokeStyle='rgba(91,200,245,'+(.07*(1-d/100))+')';
-            ctx.lineWidth=.6;ctx.moveTo(pts[a].x,pts[a].y);ctx.lineTo(pts[b].x,pts[b].y);ctx.stroke();}
-        }
-        var pt=pts[a];
-        var rdx=pt.x-mpx,rdy=pt.y-mpy,rd=Math.sqrt(rdx*rdx+rdy*rdy);
-        if(rd<80){pt.vx+=rdx/rd*.4;pt.vy+=rdy/rd*.4;}
-        pt.vx=clamp(pt.vx,-.8,.8);pt.vy=clamp(pt.vy,-.8,.1);
-        pt.x+=pt.vx;pt.y+=pt.vy;pt.life++;
-        var fade=pt.life<30?pt.life/30:pt.life>pt.max-30?(pt.max-pt.life)/30:1;
-        ctx.beginPath();ctx.arc(pt.x,pt.y,pt.r,0,Math.PI*2);
-        ctx.fillStyle='rgba(91,200,245,'+(pt.a*fade)+')';ctx.fill();
-        if(pt.life>=pt.max||pt.y<-5){Object.assign(pt,mk());pt.y=H+5;pt.life=0;}
-      }
-    });
+    var hero = qs('.s-hero');
+    if (!hero) return;
+
+    // SVG del cursor: cruz de mira simple
+    var svg = [
+      '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">',
+      '<circle cx="12" cy="12" r="4" stroke="#3c0580" stroke-width="1.5"/>',
+      '<line x1="12" y1="2" x2="12" y2="8" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
+      '<line x1="12" y1="16" x2="12" y2="22" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
+      '<line x1="2" y1="12" x2="8" y2="12" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
+      '<line x1="16" y1="12" x2="22" y2="12" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
+      '</svg>'
+    ].join('');
+
+    var encoded = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 12 12, crosshair';
+    hero.style.cursor = encoded;
   }
 
   /* ═══ 06  PARALLAX HERO ════════════════════════════════════ */

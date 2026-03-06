@@ -256,6 +256,7 @@ function agencia247MainInit() {
 		});
 	}
 
+	
 	function initThemedCursor() {
 		if (reducedMotion || !window.matchMedia || window.matchMedia('(pointer: coarse)').matches) {
 			return;
@@ -281,93 +282,82 @@ function agencia247MainInit() {
 			}
 		}
 
-		if (!cursorTheme) {
-			return;
-		}
-		if (navTheme === 'publicidad-offline') {
-			return;
-		}
-		if (navTheme === 'produccion-audiovisual' && !isHome) {
-			return;
-		}
+		if (!cursorTheme) { return; }
+		if (navTheme === 'publicidad-offline') { return; }
+		if (navTheme === 'produccion-audiovisual' && !isHome) { return; }
 
+		/* ── SVG mira (cruz de mira) ──────────────────────────────── */
+		var svgNormal = [
+			'<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">',
+			'<circle cx="14" cy="14" r="4.5" stroke="#5bc8f5" stroke-width="1.5"/>',
+			'<line x1="14" y1="2"  x2="14" y2="8"  stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="14" y1="20" x2="14" y2="26" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="2"  y1="14" x2="8"  y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="20" y1="14" x2="26" y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'</svg>'
+		].join('');
+
+		/* En hover: círculo exterior más visible */
+		var svgHover = [
+			'<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">',
+			'<circle cx="14" cy="14" r="9"   stroke="#5bc8f5" stroke-width="1"   opacity="0.45"/>',
+			'<circle cx="14" cy="14" r="4.5" stroke="#5bc8f5" stroke-width="1.5"/>',
+			'<line x1="14" y1="2"  x2="14" y2="8"  stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="14" y1="20" x2="14" y2="26" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="2"  y1="14" x2="8"  y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="20" y1="14" x2="26" y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'</svg>'
+		].join('');
+
+		var curNormal = 'url("data:image/svg+xml,' + encodeURIComponent(svgNormal) + '") 14 14, crosshair';
+		var curHover  = 'url("data:image/svg+xml,' + encodeURIComponent(svgHover)  + '") 14 14, crosshair';
+
+		/* ── Aplicar cursor a todo el body ─────────────────────────── */
 		if (!document.getElementById('agencia247-themed-cursor-style')) {
 			var cursorStyle = document.createElement('style');
 			cursorStyle.id = 'agencia247-themed-cursor-style';
-			cursorStyle.textContent = ''
-				+ 'body.has-themed-cursor, body.has-themed-cursor a, body.has-themed-cursor button,'
-				+ ' body.has-themed-cursor [role="button"], body.has-themed-cursor input,'
-				+ ' body.has-themed-cursor textarea, body.has-themed-cursor select{cursor:none!important;}'
-				+ '.theme-cursor{position:fixed;left:0;top:0;z-index:99997;pointer-events:none;opacity:0;'
-				+ 'will-change:transform;mix-blend-mode:screen;transition:opacity .18s ease;}'
-				+ '.theme-cursor-ring{--ring-scale:1;--ring-rotate:0deg;position:absolute;left:50%;top:50%;'
-				+ 'width:20px;height:20px;border-radius:50%;border:1.4px solid rgba(255,255,255,.72);'
-				+ 'transform:translate(-50%,-50%) rotate(var(--ring-rotate)) scale(var(--ring-scale));'
-				+ 'transition:transform .18s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;}'
-				+ '.theme-cursor-core{position:absolute;left:50%;top:50%;width:4px;height:4px;border-radius:50%;'
-				+ 'transform:translate(-50%,-50%);background:#fff;transition:transform .15s ease,background .2s ease;}'
-				+ '.theme-cursor.is-hover .theme-cursor-ring{--ring-scale:1.36;}'
-				+ '.theme-cursor.is-hover .theme-cursor-core{transform:translate(-50%,-50%) scale(1.22);}'
-				+ '.theme-cursor--inicio .theme-cursor-ring{border-color:rgba(91,200,245,.82);'
-				+ 'box-shadow:0 0 16px rgba(91,200,245,.24);}'
-				+ '.theme-cursor--inicio .theme-cursor-core{background:#5bc8f5;}'
-				+ '.theme-cursor--contenido .theme-cursor-ring{border-color:rgba(91,200,245,.85);'
-				+ 'box-shadow:0 0 14px rgba(91,200,245,.20);}'
-				+ '.theme-cursor--contenido .theme-cursor-core{background:#5bc8f5;}'
-				+ '.theme-cursor--diseno .theme-cursor-ring{--ring-rotate:45deg;border-radius:7px;'
-				+ 'border-color:rgba(124,169,255,.88);box-shadow:0 0 14px rgba(124,169,255,.25);}'
-				+ '.theme-cursor--diseno .theme-cursor-core{border-radius:1px;background:#7ca9ff;}'
-				+ '.theme-cursor--filmacion .theme-cursor-ring{border-style:dashed;'
-				+ 'border-color:rgba(240,245,255,.85);box-shadow:0 0 15px rgba(91,200,245,.20);}'
-				+ '.theme-cursor--filmacion .theme-cursor-core{background:#f2f7ff;box-shadow:0 0 0 3px rgba(91,200,245,.20);}'
-				+ '@media (max-width: 980px){.theme-cursor{display:none!important;}}';
+			cursorStyle.textContent =
+				'body.has-themed-cursor,'
+				+ 'body.has-themed-cursor a,'
+				+ 'body.has-themed-cursor button,'
+				+ 'body.has-themed-cursor [role="button"],'
+				+ 'body.has-themed-cursor input,'
+				+ 'body.has-themed-cursor textarea,'
+				+ 'body.has-themed-cursor select{'
+				+ '  cursor: url("data:image/svg+xml,' + encodeURIComponent(svgNormal) + '") 14 14, crosshair !important;'
+				+ '}'
+				+ '@media (max-width: 980px){'
+				+ '  body.has-themed-cursor, body.has-themed-cursor *{ cursor: auto !important; }'
+				+ '}';
 			document.head.appendChild(cursorStyle);
 		}
 
-		var cursor = document.createElement('div');
-		cursor.className = 'theme-cursor theme-cursor--' + cursorTheme;
-		cursor.innerHTML = '<span class="theme-cursor-ring"></span><span class="theme-cursor-core"></span>';
-		document.body.appendChild(cursor);
-		document.body.classList.add('has-themed-cursor');
+		/* ── Reaplicar cursor al hacer resize ──────────────────────── */
+		function applyCursor() {
+			if (window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 980) {
+				document.body.style.cursor = '';
+				document.body.classList.remove('has-themed-cursor');
+				return;
+			}
+			document.body.classList.add('has-themed-cursor');
+			document.body.style.cursor = curNormal;
+		}
 
-		var mouseX = window.innerWidth / 2;
-		var mouseY = window.innerHeight / 2;
-		var renderX = mouseX;
-		var renderY = mouseY;
+		applyCursor();
+		window.addEventListener('resize', applyCursor, { passive: true });
 
-		window.addEventListener('mousemove', function(event) {
-			mouseX = event.clientX;
-			mouseY = event.clientY;
-			cursor.style.opacity = '1';
-		}, { passive: true });
-
-		document.addEventListener('mouseleave', function() {
-			cursor.style.opacity = '0';
-		});
-		document.addEventListener('mouseenter', function() {
-			cursor.style.opacity = '1';
-		});
-
+		/* ── Hover: cambiar al SVG con anillo exterior ─────────────── */
 		var hoverTargets = document.querySelectorAll(
 			'a, button, [role="button"], .service-card, .project-item, .gal-item, .fev-gal-item, .prod-card, .prod-item, .svc-card, .cd-post__img'
 		);
-		hoverTargets.forEach(function(node) {
-			node.addEventListener('mouseenter', function() {
-				cursor.classList.add('is-hover');
+		hoverTargets.forEach(function (node) {
+			node.addEventListener('mouseenter', function () {
+				document.body.style.cursor = curHover;
 			});
-			node.addEventListener('mouseleave', function() {
-				cursor.classList.remove('is-hover');
+			node.addEventListener('mouseleave', function () {
+				document.body.style.cursor = curNormal;
 			});
 		});
-
-		function animateCursor() {
-			renderX += (mouseX - renderX) * 0.28;
-			renderY += (mouseY - renderY) * 0.28;
-			cursor.style.transform = 'translate3d(' + renderX.toFixed(2) + 'px,' + renderY.toFixed(2) + 'px,0)';
-			window.requestAnimationFrame(animateCursor);
-		}
-
-		window.requestAnimationFrame(animateCursor);
 	}
 
 	function initDynamicText() {
