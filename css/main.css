@@ -179,6 +179,44 @@ nav ul a {
 	transition: color var(--duration-sm) ease;
 }
 
+/* ─── Responsividad ─────────────────────────────── */
+@media (max-width: 900px) {
+	nav {
+		padding: 0.7rem 3%;
+	}
+	nav ul {
+		gap: 1.2rem;
+	}
+	.logo img, .logo-fallback {
+		height: 36px;
+		width: 36px;
+	}
+	.logo-text {
+		font-size: 0.95rem;
+	}
+}
+
+@media (max-width: 600px) {
+	nav {
+		padding: 0.5rem 1.5%;
+	}
+	nav ul {
+		gap: 0.7rem;
+		font-size: 0.9em;
+	}
+	.logo img, .logo-fallback {
+		height: 28px;
+		width: 28px;
+	}
+	.logo-text {
+		font-size: 0.85rem;
+	}
+	body {
+		font-size: 0.98em;
+	}
+}
+}
+
 nav ul a:hover,
 nav ul a.active {
 	color: var(--nav-link-active, var(--dark));
