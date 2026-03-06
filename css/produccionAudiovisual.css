@@ -434,11 +434,13 @@ body[data-nav-theme="produccion-audiovisual"] .sdots .sdot {
   position: absolute;
   bottom: 2rem; left: 2rem;
   display: flex; align-items: center; gap: 0.9rem;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
+  /* Use a subtle translucent glass to preserve contrast on dark hero */
+  background: var(--c-glassmd);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: var(--r-md);
   padding: 0.9rem 1.4rem;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+  box-shadow: 0 10px 34px rgba(0,0,0,0.45);
   z-index: 2;
 }
 .s-about__media-dot {
@@ -453,12 +455,12 @@ body[data-nav-theme="produccion-audiovisual"] .sdots .sdot {
   font-family: var(--f-body);
   font-size: 0.85rem;
   font-weight: 700;
-  color: #0b1630;
+  color: var(--c-white);
 }
 .s-about__media-card span {
   font-family: var(--f-body);
   font-size: 0.72rem;
-  color: #516380;
+  color: var(--c-muted);
 }
 
 .s-about__text {
