@@ -1064,7 +1064,66 @@ function agencia247MainInit() {
 			label.setAttribute('for', relatedField.id);
 		});
 	}
+	
+	function initMobileNav() {
+	var btn     = document.getElementById('nav247-btn');
+	var menu    = document.getElementById('nav247-menu');
+	var overlay = document.getElementById('nav247-overlay');
 
+	if (!btn || !menu || !overlay) {
+		console.warn('initMobileNav: elementos del menú no encontrados');
+		return;
+	}
+
+	function setOpen(open) {
+		btn.setAttribute('aria-expanded', String(open));
+		btn.classList.toggle('nav247__hamburger--open', open);
+		menu.classList.toggle('nav247__menu--open', open);
+		overlay.classList.toggle('nav247__overlay--visible', open);
+		document.body.style.overflow = open ? 'hidden' : '';
+	}
+
+	btn.addEventListener('click', function () {
+		setOpen(btn.getAttribute('aria-expanded') !== 'true');
+	});
+
+	overlay.addEventListener('click', function () { setOpen(false); });
+
+	// Acordeón para submenús en móvil (delegación en el menú)
+	menu.addEventListener('click', function (e) {
+		var link = e.target.closest('.nav247__item--has-children > a');
+		if (!link) return;
+
+		if (window.innerWidth <= 900) {
+		e.preventDefault();          // Evita la navegación
+		e.stopPropagation();         // Evita que otros listeners interfieran
+
+		var parentLi = link.closest('.nav247__item--has-children');
+		if (!parentLi) return;
+
+		// Cierra otros submenús abiertos (opcional, mejora la UX)
+		document.querySelectorAll('.nav247__item--open').forEach(function (openItem) {
+			if (openItem !== parentLi) {
+			openItem.classList.remove('nav247__item--open');
+			}
+		});
+
+		parentLi.classList.toggle('nav247__item--open');
+		console.log('Toggle submenú en', parentLi);
+		}
+	});
+
+	// Cerrar menú al pasar a desktop
+	window.addEventListener('resize', function () {
+		if (window.innerWidth > 900) {
+		setOpen(false);
+		// Cerrar submenús abiertos al volver a desktop
+		document.querySelectorAll('.nav247__item--open').forEach(function (item) {
+			item.classList.remove('nav247__item--open');
+		});
+		}
+	});
+	}
 	function handleScroll() {
 		updateNavState();
 		setActiveLink();
@@ -1080,6 +1139,7 @@ function agencia247MainInit() {
 	initFloatingWhatsApp();
 	normalizeFormFieldAccessibility();
 	handleScroll();
+	initMobileNav();   
 	window.addEventListener('scroll', handleScroll, { passive: true });
 }
 

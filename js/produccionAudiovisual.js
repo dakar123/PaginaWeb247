@@ -117,27 +117,11 @@
       bar.style.width=clamp((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100,0,100)+'%';
     },{passive:true});
   }
+/**
 
+ 
   /* ═══ 04  CURSOR PERSONALIZADO ══════════════════════════════ */
-  /* ═══ 05  CURSOR PERSONALIZADO ══════════════════════════════ */
-  function initParticles(){
-    var hero = qs('.s-hero');
-    if (!hero) return;
 
-    // SVG del cursor: cruz de mira simple
-    var svg = [
-      '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">',
-      '<circle cx="12" cy="12" r="4" stroke="#3c0580" stroke-width="1.5"/>',
-      '<line x1="12" y1="2" x2="12" y2="8" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
-      '<line x1="12" y1="16" x2="12" y2="22" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
-      '<line x1="2" y1="12" x2="8" y2="12" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
-      '<line x1="16" y1="12" x2="22" y2="12" stroke="#3c0580" stroke-width="1.5" stroke-linecap="round"/>',
-      '</svg>'
-    ].join('');
-
-    var encoded = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 12 12, crosshair';
-    hero.style.cursor = encoded;
-  }
 
   /* ═══ 06  PARALLAX HERO ════════════════════════════════════ */
   function initParallax(){

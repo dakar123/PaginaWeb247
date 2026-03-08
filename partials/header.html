@@ -1,26 +1,37 @@
-﻿<nav class="site-nav" id="site-nav" data-brand-intro="drop">
-  <a href="index.html#hero" class="logo js-brand-logo" data-route="index.html#hero">
+﻿<nav class="nav247__bar" id="site-nav" data-brand-intro="drop">
+  <a href="index.html#hero" class="nav247__logo js-brand-logo" data-route="index.html#hero">
     <img src="logo247vector.svg" data-asset="logo247vector.svg" alt="Agencia24/7" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-    <div class="logo-fallback" style="display:none;">24/7</div>
-    <span class="logo-text">Agencia24/7</span>
+    <div class="nav247__logo-fallback" style="display:none;">24/7</div>
+    <span class="nav247__logo-text">Agencia24/7</span>
   </a>
 
-  <ul class="primary-menu">
-    <li class="menu-item"><a href="index.html#hero" data-route="index.html#hero">Inicio</a></li>
-    <li class="menu-item menu-item-has-children">
+  <!-- Botón 3 rayitas — solo visible en mobile vía CSS -->
+  <button class="nav247__hamburger" id="nav247-btn" aria-label="Abrir menú" aria-expanded="false">
+    <span class="nav247__hamburger-line"></span>
+    <span class="nav247__hamburger-line"></span>
+    <span class="nav247__hamburger-line"></span>
+  </button>
+
+  <!-- Overlay oscuro al abrir el menú -->
+  <div class="nav247__overlay" id="nav247-overlay"></div>
+
+  <ul class="nav247__menu" id="nav247-menu">
+    <li class="nav247__item"><a href="index.html#hero" data-route="index.html#hero">Inicio</a></li>
+    <li class="nav247__item nav247__item--has-children">
       <a href="index.html#servicios" data-route="index.html#servicios">Servicios</a>
-      <ul class="sub-menu">
-        <li class="menu-item"><a href="servicios/contenidoDigital.html" data-route="servicios/contenidoDigital.html">Creaci&oacute;n de contenido y campa&ntilde;as digitales</a></li>
-        <li class="menu-item"><a href="servicios/disenoGrafico.html" data-route="servicios/disenoGrafico.html">Dise&ntilde;o gr&aacute;fico corporativo y publicitario</a></li>
-        <li class="menu-item"><a href="servicios/produccionAudiovisual.html" data-route="servicios/produccionAudiovisual.html">Producci&oacute;n audiovisual</a></li>
-        <li class="menu-item"><a href="servicios/publicidadOffline.html" data-route="servicios/publicidadOffline.html">Publicidad offline</a></li>
-        <li class="menu-item"><a href="servicios/filmacionEventos.html" data-route="servicios/filmacionEventos.html">Filmaci&oacute;n profesional de eventos</a></li>
+      <ul class="nav247__submenu">
+        <li class="nav247__item"><a href="servicios/contenidoDigital.html" data-route="servicios/contenidoDigital.html">Creaci&oacute;n de contenido y campa&ntilde;as digitales</a></li>
+        <li class="nav247__item"><a href="servicios/disenoGrafico.html" data-route="servicios/disenoGrafico.html">Dise&ntilde;o gr&aacute;fico corporativo y publicitario</a></li>
+        <li class="nav247__item"><a href="servicios/produccionAudiovisual.html" data-route="servicios/produccionAudiovisual.html">Producci&oacute;n audiovisual</a></li>
+        <li class="nav247__item"><a href="servicios/publicidadOffline.html" data-route="servicios/publicidadOffline.html">Publicidad offline</a></li>
+        <li class="nav247__item"><a href="servicios/filmacionEventos.html" data-route="servicios/filmacionEventos.html">Filmaci&oacute;n profesional de eventos</a></li>
       </ul>
     </li>
-    <li class="menu-item"><a href="proyectos.html#proyectos" data-route="proyectos.html#proyectos">Proyectos</a></li>
-    <li class="menu-item"><a href="../nosotros.html" data-route="../nosotros.html">Nosotros</a></li>
-    <li class="menu-item"><a href="index.html#contacto" data-route="index.html#contacto">Contacto</a></li>
+    <li class="nav247__item"><a href="proyectos.html#proyectos" data-route="proyectos.html#proyectos">Proyectos</a></li>
+    <li class="nav247__item"><a href="../nosotros.html" data-route="../nosotros.html">Nosotros</a></li>
+    <li class="nav247__item"><a href="index.html#contacto" data-route="index.html#contacto">Contacto</a></li>
   </ul>
 
   <!-- removed nav-cta (Hablemos) to match design request -->
 </nav>
+
