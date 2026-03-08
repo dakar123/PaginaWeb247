@@ -6,43 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ─────────────────────────────────────
-     1. CURSOR PERSONALIZADO
-  ───────────────────────────────────── */
-  const cursor = document.getElementById('cursor');
-  const cursorRing = cursor?.querySelector('.cursor__ring');
-  const cursorDot  = cursor?.querySelector('.cursor__dot');
-
-  if (cursor && window.innerWidth > 768) {
-    let mx = 0, my = 0;
-    let rx = 0, ry = 0;
-
-    window.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cursorDot.style.left  = mx + 'px';
-      cursorDot.style.top   = my + 'px';
-    });
-
-    // Ring sigue con lerp (suave)
-    function animateCursor() {
-      rx += (mx - rx) * 0.14;
-      ry += (my - ry) * 0.14;
-      cursorRing.style.left = rx + 'px';
-      cursorRing.style.top  = ry + 'px';
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // Hover state en elementos interactivos
-    const hovers = document.querySelectorAll('a, button, .prod-item, .gal-card, [data-hover]');
-    hovers.forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('cursor--hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('cursor--hover'));
-    });
-
-    document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
-    document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
-  }
+ 
 
 
   /* ─────────────────────────────────────
@@ -256,20 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  /* ─────────────────────────────────────
-     9. CURSOR MAGNÉTICO — botones
-  ───────────────────────────────────── */
-  if (window.innerWidth > 768) {
-    document.querySelectorAll('.btn-primary, .btn-ghost').forEach(btn => {
-      btn.addEventListener('mousemove', e => {
-        const r = btn.getBoundingClientRect();
-        const x = (e.clientX - r.left - r.width  / 2) * 0.18;
-        const y = (e.clientY - r.top  - r.height / 2) * 0.18;
-        btn.style.transform = `translateY(-3px) translate(${x}px,${y}px)`;
-      });
-      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
-    });
-  }
+ 
 
 
   /* ─────────────────────────────────────

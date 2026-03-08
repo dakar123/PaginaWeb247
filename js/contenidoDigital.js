@@ -70,6 +70,7 @@
       images.push({ src: img.src, alt: img.alt });
     });
   }
+  
   function openLb(i) {
     if (!lb || !images.length) return;
     idx = ((i % images.length) + images.length) % images.length;

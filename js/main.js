@@ -280,11 +280,16 @@ function agencia247MainInit() {
 			} else if (navTheme === 'filmacion-eventos') {
 				cursorTheme = 'filmacion';
 			}
+			 else if (navTheme === 'produccion-audiovisual') {
+				cursorTheme = 'audiovisual';
+			} else if (navTheme === 'publicidad-offline') {
+				cursorTheme = 'offline';}
+
+
 		}
 
 		if (!cursorTheme) { return; }
-		if (navTheme === 'publicidad-offline') { return; }
-		if (navTheme === 'produccion-audiovisual' && !isHome) { return; }
+		
 
 		/* ── SVG mira (cruz de mira) ──────────────────────────────── */
 		var svgNormal = [

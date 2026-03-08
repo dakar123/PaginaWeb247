@@ -52,42 +52,13 @@ body {
   color: var(--c-white);
   font-family: var(--f-body);
   overflow-x: hidden;
-  cursor: none;
+  
 }
 img   { display: block; max-width: 100%; height: auto; }
 a     { text-decoration: none; color: inherit; }
-button{ cursor: none; border: none; background: none; }
 
-/* ────────────────────────────────────────────────────────────
-   CURSOR PERSONALIZADO
-──────────────────────────────────────────────────────────── */
-.cursor {
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  mix-blend-mode: difference;
-}
-.cursor__dot {
-  position: absolute;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--c-white);
-  transform: translate(-50%,-50%);
-  transition: transform 0.1s var(--ease);
-}
-.cursor__ring {
-  position: absolute;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,0.65);
-  transform: translate(-50%,-50%);
-  transition: width 0.35s var(--ease), height 0.35s var(--ease), opacity 0.35s;
-}
-.cursor--hover .cursor__ring {
-  width: 64px; height: 64px;
-  border-color: var(--c-sky);
-}
-.cursor--hover .cursor__dot { transform: translate(-50%,-50%) scale(0); }
+
+
 
 /* ────────────────────────────────────────────────────────────
    LAYOUT

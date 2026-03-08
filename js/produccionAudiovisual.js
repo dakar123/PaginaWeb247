@@ -950,6 +950,108 @@
     window.addEventListener('scroll',function(){btn.classList.toggle('show',window.scrollY>400);},{passive:true});
     btn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
   }
+  function initThemedCursor() {
+		if (reducedMotion || !window.matchMedia || window.matchMedia('(pointer: coarse)').matches) {
+			return;
+		}
+		if (document.getElementById('cursor') || document.getElementById('cur') || document.querySelector('.theme-cursor')) {
+			return;
+		}
+
+		var body = document.body;
+		var navTheme = (body.getAttribute('data-nav-theme') || '').toLowerCase();
+		var cursorTheme = (body.getAttribute('data-cursor-theme') || '').toLowerCase();
+		var isHome = body.classList.contains('page-home');
+
+		if (!cursorTheme) {
+			if (isHome) {
+				cursorTheme = 'inicio';
+			} else if (navTheme === 'contenido-digital') {
+				cursorTheme = 'contenido';
+			} else if (navTheme === 'diseno-grafico') {
+				cursorTheme = 'diseno';
+			} else if (navTheme === 'filmacion-eventos') {
+				cursorTheme = 'filmacion';
+			}
+		}
+
+		if (!cursorTheme) { return; }
+		if (navTheme === 'publicidad-offline') { return; }
+		if (navTheme === 'produccion-audiovisual' && !isHome) { return; }
+
+		/* ── SVG mira (cruz de mira) ──────────────────────────────── */
+		var svgNormal = [
+			'<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">',
+			'<circle cx="14" cy="14" r="4.5" stroke="#5bc8f5" stroke-width="1.5"/>',
+			'<line x1="14" y1="2"  x2="14" y2="8"  stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="14" y1="20" x2="14" y2="26" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="2"  y1="14" x2="8"  y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="20" y1="14" x2="26" y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'</svg>'
+		].join('');
+
+		/* En hover: círculo exterior más visible */
+		var svgHover = [
+			'<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">',
+			'<circle cx="14" cy="14" r="9"   stroke="#5bc8f5" stroke-width="1"   opacity="0.45"/>',
+			'<circle cx="14" cy="14" r="4.5" stroke="#5bc8f5" stroke-width="1.5"/>',
+			'<line x1="14" y1="2"  x2="14" y2="8"  stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="14" y1="20" x2="14" y2="26" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="2"  y1="14" x2="8"  y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'<line x1="20" y1="14" x2="26" y2="14" stroke="#5bc8f5" stroke-width="1.5" stroke-linecap="round"/>',
+			'</svg>'
+		].join('');
+
+		var curNormal = 'url("data:image/svg+xml,' + encodeURIComponent(svgNormal) + '") 14 14, crosshair';
+		var curHover  = 'url("data:image/svg+xml,' + encodeURIComponent(svgHover)  + '") 14 14, crosshair';
+
+		/* ── Aplicar cursor a todo el body ─────────────────────────── */
+		if (!document.getElementById('agencia247-themed-cursor-style')) {
+			var cursorStyle = document.createElement('style');
+			cursorStyle.id = 'agencia247-themed-cursor-style';
+			cursorStyle.textContent =
+				'body.has-themed-cursor,'
+				+ 'body.has-themed-cursor a,'
+				+ 'body.has-themed-cursor button,'
+				+ 'body.has-themed-cursor [role="button"],'
+				+ 'body.has-themed-cursor input,'
+				+ 'body.has-themed-cursor textarea,'
+				+ 'body.has-themed-cursor select{'
+				+ '  cursor: url("data:image/svg+xml,' + encodeURIComponent(svgNormal) + '") 14 14, crosshair !important;'
+				+ '}'
+				+ '@media (max-width: 980px){'
+				+ '  body.has-themed-cursor, body.has-themed-cursor *{ cursor: auto !important; }'
+				+ '}';
+			document.head.appendChild(cursorStyle);
+		}
+
+		/* ── Reaplicar cursor al hacer resize ──────────────────────── */
+		function applyCursor() {
+			if (window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 980) {
+				document.body.style.cursor = '';
+				document.body.classList.remove('has-themed-cursor');
+				return;
+			}
+			document.body.classList.add('has-themed-cursor');
+			document.body.style.cursor = curNormal;
+		}
+
+		applyCursor();
+		window.addEventListener('resize', applyCursor, { passive: true });
+
+		/* ── Hover: cambiar al SVG con anillo exterior ─────────────── */
+		var hoverTargets = document.querySelectorAll(
+			'a, button, [role="button"], .service-card, .project-item, .gal-item, .fev-gal-item, .prod-card, .prod-item, .svc-card, .cd-post__img'
+		);
+		hoverTargets.forEach(function (node) {
+			node.addEventListener('mouseenter', function () {
+				document.body.style.cursor = curHover;
+			});
+			node.addEventListener('mouseleave', function () {
+				document.body.style.cursor = curNormal;
+			});
+		});
+	}
 
   /* ═══════════════════════════════════════════════════════════
      BOOT — arranque en orden
@@ -983,6 +1085,7 @@
     initAudioFeedback();
     initScrollTop();
     initToasts();
+    initThemedCursor();
   }
 
   if(document.readyState==='loading'){
