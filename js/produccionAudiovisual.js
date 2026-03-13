@@ -98,7 +98,10 @@
       if(pct===100) setTimeout(function(){
         el.classList.add('done');
         document.body.style.overflow='';
-        setTimeout(function(){el.remove();},650);
+        setTimeout(function(){
+          el.remove();
+          initCounters();          // ← dispara contadores DESPUÉS del loader
+        },650);
       },300);
     },170);
   }
@@ -1060,7 +1063,6 @@
     initLoader();
     initProgressBar();
     initReveal();
-    initCounters();
     initSmoothScroll();
     initParticles();
     initParallax();

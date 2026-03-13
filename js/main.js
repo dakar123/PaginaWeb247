@@ -1087,6 +1087,11 @@ function agencia247MainInit() {
 		overlay.classList.toggle('nav247__overlay--visible', open);
 		document.body.style.overflow = open ? 'hidden' : '';
 	}
+	function closeAllSubmenus() {
+		document.querySelectorAll('.nav247__item--open').forEach(function (item) {
+			item.classList.remove('nav247__item--open');
+		});
+	}
 
 	btn.addEventListener('click', function () {
 		setOpen(btn.getAttribute('aria-expanded') !== 'true');
@@ -1094,38 +1099,49 @@ function agencia247MainInit() {
 
 	overlay.addEventListener('click', function () { setOpen(false); });
 
-	// Acordeón para submenús en móvil (delegación en el menú)
+	// Click en enlace con submenú — funciona en MOBILE y DESKTOP
 	menu.addEventListener('click', function (e) {
+		// Busca desde e.target hacia arriba, incluyendo el caso SVG/path
 		var link = e.target.closest('.nav247__item--has-children > a');
 		if (!link) return;
 
-		if (window.innerWidth <= 900) {
-		e.preventDefault();          // Evita la navegación
-		e.stopPropagation();         // Evita que otros listeners interfieran
+		e.preventDefault();
+		e.stopPropagation();
 
 		var parentLi = link.closest('.nav247__item--has-children');
 		if (!parentLi) return;
 
-		// Cierra otros submenús abiertos (opcional, mejora la UX)
-		document.querySelectorAll('.nav247__item--open').forEach(function (openItem) {
-			if (openItem !== parentLi) {
-			openItem.classList.remove('nav247__item--open');
-			}
-		});
+		var isOpen = parentLi.classList.contains('nav247__item--open');
 
-		parentLi.classList.toggle('nav247__item--open');
-		console.log('Toggle submenú en', parentLi);
+		// Cierra otros submenús abiertos
+		closeAllSubmenus();
+
+		// Si estaba cerrado, lo abre
+		if (!isOpen) {
+			parentLi.classList.add('nav247__item--open');
 		}
 	});
 
-	// Cerrar menú al pasar a desktop
+	// Cerrar submenú al hacer click fuera del nav
+	document.addEventListener('click', function (e) {
+		if (!menu.contains(e.target)) {
+			closeAllSubmenus();
+		}
+	});
+
+	// Tecla Escape cierra todo
+	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Escape') {
+			closeAllSubmenus();
+			setOpen(false);
+		}
+	});
+
+	// Cerrar menú hamburguesa al pasar a desktop
 	window.addEventListener('resize', function () {
 		if (window.innerWidth > 900) {
-		setOpen(false);
-		// Cerrar submenús abiertos al volver a desktop
-		document.querySelectorAll('.nav247__item--open').forEach(function (item) {
-			item.classList.remove('nav247__item--open');
-		});
+			setOpen(false);
+			closeAllSubmenus();
 		}
 	});
 	}

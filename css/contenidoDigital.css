@@ -27,8 +27,8 @@
   --c-ig: #e1306c;
   --c-tw: #1d9bf0;
 
-  --f-ui:   'Plus Jakarta Sans', sans-serif;
-  --f-mono: 'IBM Plex Mono', monospace;
+  --f-ui:   'Poppins', sans-serif;
+  --f-mono: 'Poppins', sans-serif;
 
   --r-sm:   8px;
   --r-md:   14px;
@@ -703,4 +703,8 @@ ul { list-style: none; }
 }
 @media (max-width: 480px) {
   .cd-explorer { grid-template-columns: 1fr 1fr; grid-auto-rows: 140px; }
+}
+@media (max-width: 340px) {
+  .cd-posts{transform: scale(0.8);};
+
 }

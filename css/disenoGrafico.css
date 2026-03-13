@@ -26,9 +26,9 @@
   --sh-blue:   0 8px 32px rgba(35,83,232,0.40);
   --sh-hover:  0 24px 56px rgba(0,0,0,0.40);
 
-  --f-disp: 'Barlow Condensed', sans-serif;
-  --f-semi: 'Barlow Semi Condensed', sans-serif;
-  --f-body: 'Barlow', sans-serif;
+  --f-disp: 'Poppins', sans-serif;
+  --f-semi: 'Poppins', sans-serif;
+  --f-body: 'Poppins', sans-serif;
 
   --r-sm:   8px;
   --r-md:   14px;
@@ -953,4 +953,14 @@ button{ cursor: pointer; border: none; background: none; }
   .gal-item--tall { grid-row: span 1; }
   .lb-nav { display: none; }
   .s-hero__cta-row { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 340px) {
+.s-hero__badge { font-size: 0.32rem !important; padding: 0.18rem 0.85rem !important; gap: 0.8rem !important;  } 
+.s-hero {
+    padding: 5px 0% !important; }
+.s-hero__left {
+        padding: 3.5rem 1rem 4rem;
+    }
+
+
 }

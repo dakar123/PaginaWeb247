@@ -29,9 +29,9 @@
   --sh-hover: 0 24px 56px rgba(0,0,0,0.40);
 
   /* Fuentes */
-  --f-disp: 'Barlow Condensed', sans-serif;
-  --f-semi: 'Barlow Semi Condensed', sans-serif;
-  --f-body: 'Barlow', sans-serif;
+  --f-disp: 'Poppins', sans-serif;
+  --f-semi: 'Poppins', sans-serif;
+  --f-body: 'Poppins', sans-serif;
 
   /* Radios */
   --r-sm:  8px;
@@ -1180,4 +1180,7 @@ body[data-nav-theme="produccion-audiovisual"] .sdots .sdot {
   .gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 200px; }
   .gal-item--tall { grid-row: span 1; }
   .lb-nav { display: none; }
+}
+@media (max-width: 340px) {
+  
 }
