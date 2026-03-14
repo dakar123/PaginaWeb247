@@ -805,6 +805,58 @@ button { cursor: pointer; border: none; background: none; }
   .fev-gal-item--tall { grid-row: span 1; }
   .fev-specs__row { grid-template-columns: repeat(2, 1fr); }
   .fev-cta__content { flex-direction: column; gap: 2rem; }
+ 
+  /* AGREGAR: stats 2x2 más compactas */
+  .fev-hero__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fev-hero__stat {
+    padding: 1rem 1.2rem;
+  }
+  .fev-hero__stat-num {
+    font-size: 2rem;
+  }
+  .fev-hero__stat:nth-child(2) {
+    border-right: none;
+  }
+  .fev-hero__stat:nth-child(3) {
+    border-top: 1px solid var(--c-rim);
+  }
+  .fev-hero__stat:nth-child(4) {
+    border-top: 1px solid var(--c-rim);
+    border-right: none;
+  }
+
+  .fev-hero__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  /* Botón play primero */
+  .fev-hero__play {
+    order: -1;
+  }
+
+  /* Botón VER PROYECTOS ocupa todo el ancho en segunda fila */
+  .fev-btn--primary {
+    order: 0;
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  /* Botón NUESTROS SERVICIOS también full width */
+  .fev-btn--ghost {
+    order: 1;
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  /* AGREGAR: container más ajustado */
+  .container {
+    padding: 0 1rem;
+  }
 }
 @media (max-width: 480px) {
   .fev-hero__title { font-size: clamp(2.8rem, 14vw, 2.8rem); }
