@@ -130,14 +130,16 @@
 
 /* ─── Base ─────────────────────────────────────────────────── */
 html {
-	scroll-behavior: smooth;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
 }
+
 
 body {
 	font-family: 'Poppins', sans-serif;
 	background: var(--bg);
 	color: var(--dark);
-	overflow-x: clip;
+	overflow-x: hidden;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -145,6 +147,7 @@ body {
 body.has-top-nav-space {
 	padding-top: clamp(76px, 8.8vh, 98px);
 }
+
 
 main {
 	display: block;
@@ -2216,11 +2219,11 @@ body[data-nav-theme="filmacion-eventos"] .site-nav {
 
 /* Home dark theme aligned with service pages */
 body.page-home {
-	background:
-		radial-gradient(1200px 620px at 10% -12%, rgba(35,83,232,0.30), transparent 70%),
-		radial-gradient(980px 520px at 88% 8%, rgba(91,200,245,0.14), transparent 64%),
-		#060c1c;
-	color: #ffffff;
+    background:
+        radial-gradient(120vw 62vh at 10% -12%, rgba(35,83,232,0.30), transparent 70%),
+        radial-gradient(98vw 52vh at 88% 8%, rgba(91,200,245,0.14), transparent 64%),
+        #060c1c;
+    color: #ffffff;
 }
 
 body.page-home #hero {
