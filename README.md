@@ -26,6 +26,8 @@ Version estatica en HTML, CSS y JS puro para Cloudflare Pages.
 4. Build output directory: `.` (raiz del repositorio).
 5. Deploy.
 
+Ahora mismo el proyecto esta desplegado como crea247.com
+
 ## Editar contenido rapido
 
 - Header/Footer/WhatsApp global: edita `partials/*.html` una sola vez.
