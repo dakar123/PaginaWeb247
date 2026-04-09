@@ -1,7 +1,7 @@
 # PaginaWeb247
 
 ##MEJORAS A COMPLETAR, Imagenes o videos requeridos, Mejorar Busqueda en Buscadores como Brave, Edge, etc.
-
+LOGO SIGUE SIN FONDO BLANCO
 Version estatica en HTML, CSS y JS puro para Cloudflare Pages.
 
 ## Estructura final
