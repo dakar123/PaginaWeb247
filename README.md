@@ -1,4 +1,5 @@
 # PaginaWeb247
+##PROYECTO A LA ESPERA DE MATERIAL
 
 ##MEJORAS A COMPLETAR, Imagenes o videos requeridos, Mejorar Busqueda en Buscadores como Brave, Edge, etc.
 LOGO SIGUE SIN FONDO BLANCO
